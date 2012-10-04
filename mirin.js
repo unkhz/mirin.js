@@ -43,10 +43,11 @@ var Mirin;
 
         MirinModule.prototype.onJsLoaded = function(url,e) {
             this.loadedResources.js.push(url);
+            log("Mirin loaded", this.id, "js", url);
             if ( this.onJsLoad ) this.onJsComplete.call(this);
             if ( this.loadedResources.js.length == this.resources.js.length ) {
                 log("Mirin completed loading of", this.id, "js");
-                if ( this.onJsComplete ) this.onJsComplete.call(this);
+                if ( this.options.onJsComplete ) this.options.onJsComplete.call(this);
             }
         };
     }());
