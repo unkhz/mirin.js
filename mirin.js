@@ -4,15 +4,12 @@ var Mirin;
     'use strict';
 
     var options = {
-        url:"resources.json",  // if this is defined, load resource collection from this url
-        collection:null,       // if this is defined, use this as the resource collection
-        modules:[],            // modules to inject at startup
-        async:false            // load javascripts asynchronously
+        url:"resources.json",   // if this is defined, load resource collection from this url
+        collection:null,        // if this is defined, use this as the resource collection
+        modules:[],             // modules to inject at startup
+        async:false,            // load javascripts asynchronously
+        debug:false              // log debug information
     };
-
-    if ( !window.console ) {
-        window.console = {log:function(){}};
-    }
 
     var MirinModule = function(moduleId){
         this.id = moduleId;
@@ -23,6 +20,12 @@ var Mirin;
     var resourceCollection = null,
         modules = [];
 
+    function log() {
+        if (options.debug && window.console && window.console.log) {
+            console.log.apply(console,arguments);
+        }
+    }
+
     function injectAll() {
         
         // wait until resources exist
@@ -31,7 +34,7 @@ var Mirin;
         for ( var i in modules ) {
             var moduleId = modules[i].id;
             if ( !resourceCollection[moduleId] || !resourceCollection[moduleId] ) {
-                console.log(moduleId, resourceCollection[moduleId]);
+                log(moduleId, resourceCollection[moduleId]);
                 throw("Mirin was instructed to inject an invalid module");
             }
             var collection = modules[i].resources = resourceCollection[moduleId];
@@ -40,7 +43,7 @@ var Mirin;
                     factoryMethod = ElementFactory[type];
                 for ( var i in set ) {
                     var url = set[i];
-                    console.log("Mirin", "Injecting", moduleId, type, url);
+                    log("Mirin", "Injecting", moduleId, type, url);
                     switch ( type ) {
                         case "js":
                         case "css":
@@ -81,7 +84,7 @@ var Mirin;
         xhr.open("GET", url, true);
         xhr.onload = xhr.onreadystatechange = function(e){
             if ( e.target && e.target.responseText && !finished ) {
-                console.log("Mirin", "onResourceFetchComplete", url);
+                log("Mirin", "onResourceFetchComplete", url);
                 finished = true;
                 callbackFunction.call(self, e.target.responseText);
             }
@@ -90,7 +93,7 @@ var Mirin;
     }
 
     function onResourcesLoaded(data) {
-        console.log("Mirin", "onResourcesLoaded");
+        log("Mirin", "onResourcesLoaded");
         resourceCollection = JSON.parse(data);
         injectAll();
     }
@@ -98,10 +101,23 @@ var Mirin;
     /* public api */
     var self = Mirin = {
         init:function(aOptions){
-            console.log("Mirin", "init");
             if ( aOptions ) for ( var i in aOptions ) options[i] = aOptions[i];
-            fetchResource(options.url,onResourcesLoaded);
-            for ( var i in options.modules ) self.inject(options.modules[i]);
+            log("Mirin", "init");
+
+            // initial resource collection
+            if ( options.collection ) {
+                resourceCollection = options.collection;
+            }
+
+            // possibly fetch collection from url
+            if ( options.url ) {
+                fetchResource(options.url,onResourcesLoaded);
+            }
+
+            // add initial modules to injection queue
+            for ( var i in options.modules ) {
+                self.inject(options.modules[i]);
+            }
         },
         inject:function(moduleId){
             modules.push(new MirinModule(moduleId));
@@ -109,7 +125,4 @@ var Mirin;
         },
         modules:modules
     };
-
-    Mirin.init({url:"resources.json", modules:["application"]});
-
 }());
