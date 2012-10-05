@@ -1,0 +1,44 @@
+<project name="Mirin.js" default="compile" basedir=".">
+    <description>Mirin.js concatenation and minification</description>
+  <!-- set global properties for this build -->
+  <property name="src.dir" location="src"/>
+  <property name="dist.dir" location="dist"/>
+  <property name="dist.filename.cat" location="${dist.dir}/mirin.js"/>
+  <property name="dist.filename.min" location="${dist.dir}/min.mirin.js"/>
+  <echo>creating ${dist.filename.min}</echo>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${dist.dir}"/>
+  </target>
+
+  <target name="concat" depends="init" description="concat the source">
+    <!-- wrap in closure -->
+    <concat destfile="${dist.filename.cat}" fixlastline="yes">;(function(){</concat>
+    <concat destfile="${dist.filename.cat}" append="true" fixlastline="yes">
+       <fileset file="${src.dir}/root.js" />
+       <fileset file="${src.dir}/mirin.js" />
+       <fileset file="${src.dir}/mirin_module.js" />
+       <fileset file="${src.dir}/mirin_item.js" />
+     </concat>
+    <!-- wrap in closure -->
+    <concat destfile="${dist.filename.cat}" append="true" fixlastline="yes">}());</concat>
+  </target>
+
+  <target name="compile" depends="init,concat" description="compile the source ">
+    <java jar="compiler.jar" fork="true">
+      <arg value="--js"/>
+      <arg value="${dist.filename.cat}"/>
+      <arg value="--js_output_file"/>
+      <arg value="${dist.filename.min}"/>
+      <arg value="--compilation_level"/>
+      <arg value="ADVANCED_OPTIMIZATIONS"/>
+    </java>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <delete dir="${dist.dir}"/>
+  </target>
+</project>
