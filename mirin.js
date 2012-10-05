@@ -27,20 +27,20 @@
         }
     }
 
-    function injectAll() {
-        
+    function injectAll() {       
         // wait until resources exist
         if (!resourceCollection) return;
 
         for ( var i in modules ) {
             var module = modules[i];
-            if ( !resourceCollection[module.id] ||   !resourceCollection[module.id] ) {
-                log(module.id, resourceCollection[module.id]);
-                throw("Mirin was instructed to inject an invalid module");
+            if ( module.isInjected == false ) {
+                if ( !resourceCollection[module.id] ||   !resourceCollection[module.id] ) {
+                    log(module.id, resourceCollection[module.id]);
+                    throw("Mirin was instructed to inject an invalid module");
+                }
+                module.resources = resourceCollection[module.id];
+                module.inject();
             }
-            module.resources = resourceCollection[module.id];
-            module.inject();
-
         }
     }
 
@@ -152,6 +152,7 @@
     };
 
     proto.inject = function() {
+        log("Mirin","injecting module",this.id);
         var instance = this;
         for ( var type in this.resources ) {
             var set = this.resources[type];
@@ -196,6 +197,7 @@
                 log("Mirin", "injected", this.id, item.type, item.url);
             }
         }
+        this.isInjected=true;
     };
 
 
