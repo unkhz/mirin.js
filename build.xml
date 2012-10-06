@@ -22,6 +22,7 @@
        <fileset file="${src.dir}/mirin.js" />
        <fileset file="${src.dir}/mirin_module.js" />
        <fileset file="${src.dir}/mirin_item.js" />
+       <fileset file="${src.dir}/mirin_resource_plugins.js" />
      </concat>
     <!-- wrap in closure -->
     <concat destfile="${dist.filename.cat}" append="true" fixlastline="yes">}());</concat>
@@ -33,8 +34,6 @@
       <arg value="${dist.filename.cat}"/>
       <arg value="--js_output_file"/>
       <arg value="${dist.filename.min}"/>
-      <arg value="--compilation_level"/>
-      <arg value="ADVANCED_OPTIMIZATIONS"/>
     </java>
   </target>
 

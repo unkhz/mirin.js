@@ -1,32 +1,44 @@
 /* MirinItem */
 
 (function(){
-    var self = MirinItem = function(url,type,module) {
+
+    var defaultOptions = {
+        onInject:null,
+        onLoad:null
+    };
+
+    MirinItem = function(url,type,module) {
         extend(this,{
             module:module,
-            type:type,
+            resourcePlugin:Mirin.resourcePlugins[type],
             url:url
         });
-    }, proto = self.prototype;
+    }, proto = MirinItem.prototype;
 
+    // inject into DOM
+    // not all items are injected
+    proto.inject = function(injectOptions) {
+        log("MirinItem","injecting",this.url);
+        var item = this;
+
+        // perform injection with a type specific method
+        this.resourcePlugin.inject(this, {
+            onInject:function(closure){
+                item.el = closure.el;
+                injectOptions.onInject.call(item,item);
+            },
+            onLoad:function(closure){
+                injectOptions.onLoad.call(item,item);
+            }
+        });
+    };
+
+    // fetch with ajax
+    // not all items are fetched
     proto.fetch = function(callbackFunction) {
-        var xhr = new XMLHttpRequest(),
-            finished=false,
-            item=this;
-        xhr.open("GET", this.url, true);
-        xhr.onload = xhr.onreadystatechange = function(e){
-            var response;
-            try {
-                // need to catch error, when xhr is aborted on IE
-                response=e.target.responseText;
-            } catch(ee) {
-            }
-
-            if ( response && !finished ) {
-                finished = true;
-                callbackFunction.call(item, response, this.url);
-            }
-        };
-        xhr.send(null);
+        var item=this;
+        fetch(this.url, function(){
+            callbackFunction.call(item,response);
+        });
     };
 }());

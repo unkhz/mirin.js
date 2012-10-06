@@ -4,6 +4,7 @@
 var root=this,
     MirinModule,
     MirinItem,
+    MirinResourcePlugin,
 
     // top level options object, with defaults
     rootOptions = {
@@ -15,7 +16,9 @@ var root=this,
 
     // minification optimizations
     arraySlice = Array.prototype.slice,
-    createElement = document.createElement,
+    createElement = function(el){
+        return document.createElement(el);
+    },
 
     // IE detection, https://gist.github.com/527683
     ie = (function(){
@@ -51,3 +54,32 @@ function extend() {
     }
     return dest;
 }
+
+function dispatch(eventName, listenerObject, contextObject){
+    var callbackName = "on"+ eventName[0].toUpperCase() + eventName.slice(1),
+        callback = listenerObject[callbackName];
+    if ( callback ) {
+        callback.apply(contextObject, arraySlice.call(arguments,3));
+    }
+};
+
+// fetch with ajax
+function fetch(url, callbackFunction) {
+    var xhr = new XMLHttpRequest(),
+        finished=false;
+    xhr.open("GET", url, true);
+    xhr.onload = xhr.onreadystatechange = function(e){
+        var response;
+        try {
+            // need to catch error, when xhr is aborted on IE
+            response=e.target.responseText;
+        } catch(ee) {
+        }
+
+        if ( response && !finished ) {
+            finished = true;
+            callbackFunction.call(this, response);
+        }
+    };
+    xhr.send(null);
+};

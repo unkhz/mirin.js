@@ -2,7 +2,7 @@
 (function(){
 
     var resourceCollection = {},
-        modules = [];
+        modules = {};
 
 
     function injectAll() {
@@ -31,8 +31,7 @@
 
             // possibly fetch collection from url
             if ( rootOptions.url ) {
-                var item = new MirinItem(rootOptions.url,'json');
-                item.fetch(function(data){
+                fetch(rootOptions.url, function(data){
                     log("Mirin", "loaded resource collection from", rootOptions.url);
                     resourceCollection = JSON.parse(data);
                     injectAll();
@@ -40,7 +39,8 @@
             }
         },
         inject:function(moduleId, aOptions){
-            modules.push(new MirinModule(moduleId, aOptions));
+            if ( modules[moduleId] ) throw(new Error("Module already injected"));
+            modules[moduleId] = new MirinModule(moduleId, aOptions);
             injectAll();
         },
         modules:modules,
