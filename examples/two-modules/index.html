@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mirin two module example</title>
+    <script type="text/javascript" src="../../dist/min.mirin.js"></script>
+    <script>
+
+        // initialization is done as soon as mirin.js is loaded
+        
+        Mirin.init({
+            debug:true,
+            collection:{
+                "first-module":{
+                    js:["script1.js"],
+                    css:["style1.css"],
+                    html:["include1.html"]
+                },
+                "second-module":{
+                    js:["script2.js"],
+                    css:["style2.css"],
+                    html:["include2.html"]
+                }
+            }
+
+        });
+
+        // injection of modules can be done independently
+        // here, depending on user click actions
+
+        function injectFirst() {
+            Mirin.inject("first-module", {
+                // onModuleLoaded will fire when all the module resources have been injected and loaded
+                onModuleLoaded:function(){
+                    console.log("First module injection complete");
+                    runFirst();
+                }
+            });
+        }
+
+        function injectSecond() {
+            Mirin.inject("second-module", {
+                
+                // onProgress will fire when ever one item has completed loading
+
+                onProgress:function(module){
+                    console.log(module);
+                },
+
+                // onModuleLoaded will fire when all the module resources have been injected and loaded
+                
+                onModuleLoaded:function(){
+                    console.log("Second module injection complete");
+                    runSecond();
+                }
+            });
+        }
+
+
+    </script>
+</head>
+<body>
+    <div class="controls">
+        <p>
+            <button onclick="injectFirst();">First module</button>
+            <button onclick="injectSecond();">Second module</button>
+        </p>
+    </div>
+</body>
+</html>
