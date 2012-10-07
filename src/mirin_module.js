@@ -1,24 +1,25 @@
 /* MirinModule */
 (function(){
     var defaultOptions = {
-            onProgress:null,    // fires when single item of any set is loaded
-            onSetLoaded:null,    // fires when a set is loaded
-            onModuleLoaded:null, // fires when the whole module is loaded
-            sets:[]           // sets to inject
+            "onProgress":null,    // fires when single item of any set is loaded
+            "onSetLoaded":null,    // fires when a set is loaded
+            "onModuleLoaded":null, // fires when the whole module is loaded
+            "sets":[]           // sets to inject
         },
         EVENTS = {
-            "progress":"progress",
-            "setLoaded":"setLoaded",
-            "moduleLoaded":"moduleLoaded"
+            progress:"progress",
+            setLoaded:"setLoaded",
+            moduleLoaded:"moduleLoaded"
         };
 
     MirinModule = function(moduleId, aOptions){
-        var opts = this.options = extend({},defaultOptions,{sets:rootOptions.sets},aOptions);
+        var opts = this.options = extend({},defaultOptions,{"sets":rootOptions['sets']},aOptions);
         extend(this,{
             id:moduleId,
             isInjected:false,
             resources:null,   // resource list
             setCounts:{},     // counts of loaded and injected resources on each set {injected:<int>,loaded:<int>}
+            items:[],
             creationTime:new Date().getTime()
         });
         var sets = opts.sets;
@@ -43,8 +44,7 @@
     proto.inject = function() {
         log("Mirin","injecting module",this.id);
         var instance = this,
-            injectToDom = document.body.appendChild,
-            sets=this.options.sets;
+            sets=this.options['sets'];
         for ( var i in sets ) {
             var type = sets[i],
                 set = this.resources[type],
@@ -56,6 +56,7 @@
                     onLoad:onItemLoad
                 });
                 setCountObj.injected++;
+                this.items.push(item);
             }
         }
         this.isInjected=true;
@@ -77,10 +78,17 @@
 
         if ( module.setIsLoaded(type) ) {
             log("Mirin completed loading of", type, "set in module", module.id);
+            for ( var i in module.items ) {
+                var rp = module.items[i].resourcePlugin;
+                if ( rp.id == type ) rp.onSetLoaded(module);
+            }
         }
 
         if ( module.moduleIsLoaded() ) {
             log("Mirin completed loading of module", module.id, "in", new Date().getTime() - module.creationTime, "ms");
+            for ( var i in module.items ) {
+                module.items[i].resourcePlugin.onModuleLoaded(module);
+            }
             dispatch(EVENTS.moduleLoaded, module.options, module, module);
         }
     }

@@ -2,16 +2,17 @@
 /* Mirin.js */
 
 var root=this,
+    Mirin,
     MirinModule,
     MirinItem,
     MirinResourcePlugin,
 
     // top level options object, with defaults
     rootOptions = {
-        collection:null,        // if this is defined, use this as the initial resource collection
-        url:null,               // if this is defined, extend resource collection with json from this url
-        debug:false,            // log debug information
-        sets:["js","css","html"] // resource sets to load
+        "collection":null,        // if this is defined, use this as the initial resource collection
+        "url":null,               // if this is defined, extend resource collection with json from this url
+        "debug":false,            // log debug information
+        "sets":["js","css","html"] // resource sets to load
     },
 
     // minification optimizations

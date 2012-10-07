@@ -34,6 +34,10 @@
       <arg value="${dist.filename.cat}"/>
       <arg value="--js_output_file"/>
       <arg value="${dist.filename.min}"/>
+      <arg value="--compilation_level"/>
+      <arg value="SIMPLE_OPTIMIZATIONS"/>
+      <arg value="--externs"/>
+      <arg value="externs.js"/>
     </java>
   </target>
 

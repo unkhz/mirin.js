@@ -7,12 +7,12 @@
     };
 
     var EVENTS = {
-        "inject":"inject",
-        "load":"load"
+        inject:"inject",
+        load:"load"
     };
 
     // types indexed by their id
-    var MirinResourcePlugins = Mirin.resourcePlugins = {};
+    var MirinResourcePlugins = Mirin['resourcePlugins'] = {};
 
 
     MirinResourcePlugin = {
@@ -23,10 +23,19 @@
     };
 
 
+
     /* js-inejct */
     (function(){
-        var appendQueue = [];
-        MirinResourcePlugins.js = {
+        
+        function AppendQueueItem(el,options){
+            extend(this, {
+                el:el,
+                options:options
+            });
+        }
+        var appendQueue = {};
+
+        MirinResourcePlugins['js'] = {
             id : "js",
             inject: function(item, aOptions) {
                 // here, we operate on the function call spefific closure
@@ -40,8 +49,10 @@
                 if ( ie ) {
                     // on IE, fetching starts when src property is set, so injection can be delayed
                     // see: http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
+                    
                     if (!appendQueue[item.module.id]) appendQueue[item.module.id] = [];
-                    appendQueue.push(this);
+                    appendQueue[item.module.id].push(new AppendQueueItem(el,closureOptions));
+
                     elProperties.onreadystatechange=function(e){
                         var state = this.readyState;
                         if ( state == 'loaded') {
@@ -67,10 +78,10 @@
                 // on IE, we inject all scripts when everything is loaded
                 // to preserve parsing order
                 var moduleAppendQueue = appendQueue[module.id];
-                while ( moduleAppendQueue.length > 0 ) {
-                    var closure = moduleAppendQueue.shift();
-                    document.head.appendChild(closure.el);
-                    dispatch(EVENTS.inject,closure.closrureOptions,closure,closure);
+                while ( moduleAppendQueue && moduleAppendQueue.length > 0 ) {
+                    var appendQueueItem = moduleAppendQueue.shift();
+                    document.head.appendChild(appendQueueItem.el);
+                    dispatch(EVENTS.inject,appendQueueItem.options,appendQueueItem,appendQueueItem);
                 }
             },
 
@@ -83,7 +94,7 @@
 
     /* css */
     (function(){
-        MirinResourcePlugins.css = {
+        MirinResourcePlugins['css'] = {
             id : "css",
             inject: function(item, aOptions) {
                 var closure = this,

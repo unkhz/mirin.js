@@ -18,7 +18,6 @@
     // inject into DOM
     // not all items are injected
     proto.inject = function(injectOptions) {
-        log("MirinItem","injecting",this.url);
         var item = this;
 
         // perform injection with a type specific method

@@ -19,13 +19,13 @@
     }
 
     /* public api */
-    var self = window.Mirin = {
-        init:function(aOptions){
+    Mirin = window['Mirin'] = {
+        "init":function(aOptions){
             extend(rootOptions,aOptions);
 
             // initial resource collection
             if ( rootOptions.collection ) {
-                resourceCollection = rootOptions.collection;
+                resourceCollection = rootOptions['collection'];
                 injectAll();
             }
 
@@ -38,12 +38,12 @@
                 });
             }
         },
-        inject:function(moduleId, aOptions){
+        "inject":function(moduleId, aOptions){
             if ( modules[moduleId] ) throw(new Error("Module already injected"));
             modules[moduleId] = new MirinModule(moduleId, aOptions);
             injectAll();
         },
-        modules:modules,
-        collection:resourceCollection
+        "modules":modules,
+        "collection":resourceCollection
     };
 }());
