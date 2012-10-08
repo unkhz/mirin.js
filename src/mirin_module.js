@@ -12,82 +12,126 @@
             moduleLoaded:"moduleLoaded"
         };
 
+
     MirinModule = function(moduleId, aOptions){
         var opts = this.options = extend({},defaultOptions,{"sets":rootOptions['sets']},aOptions);
         extend(this,{
             id:moduleId,
-            isInjected:false,
+            isInitialized:false,
             resources:null,   // resource list
             setCounts:{},     // counts of loaded and injected resources on each set {injected:<int>,loaded:<int>}
             items:[],
+            types:[],
             creationTime:new Date().getTime()
         });
-        var sets = opts.sets;
     };
     var proto = MirinModule.prototype;
 
     proto.setIsLoaded = function(type) {
-        var setCountObj = this.setCounts[type];
-        return setCountObj ? setCountObj.injected === setCountObj.loaded : false;
+        return this.getEventCount(type,ITEM_EVENTS.init) === this.getEventCount(type,ITEM_EVENTS.inject) === this.getEventCount(type,ITEM_EVENTS.load);
     };
 
     proto.moduleIsLoaded = function() {
-        for ( var type in this.resources ) {
-            var setCountObj = this.setCounts[type];
-            if ( setCountObj && setCountObj.injected !== setCountObj.loaded ) {
+        var i, type;
+        for ( i in this.types ) {
+            type = this.types[i];
+            if ( this.getEventCount(type,ITEM_EVENTS.init) !== this.getEventCount(type,ITEM_EVENTS.load) ) {
                 return false;
             }
         }
         return true;
     };
 
-    proto.inject = function() {
-        log("Mirin","injecting module",this.id);
-        var instance = this,
-            sets=this.options['sets'];
-        for ( var i in sets ) {
-            var type = sets[i],
-                set = this.resources[type],
-                setCountObj=this.setCounts[type]={injected:0,loaded:0};
-            for ( var j in set ) {
-                var item = new MirinItem(set[j], type, this);
-                item.inject({
-                    onInject:onItemInject,
-                    onLoad:onItemLoad
-                });
-                setCountObj.injected++;
-                this.items.push(item);
-            }
+    proto.countEvent = function(item,eventId) {
+        var counterObj = this.setCounts[item.pluginId];
+        if ( !counterObj ) {
+            counterObj = this.setCounts[item.pluginId] = {
+                init:0,
+                inject:0,
+                load:0
+            };
         }
-        this.isInjected=true;
+        counterObj[eventId]++;
     };
 
+    proto.getEventCount = function(pluginId,eventId){
+        if ( this.setCounts && this.setCounts[pluginId] && this.setCounts[pluginId][eventId]) {
+            return this.setCounts[pluginId][eventId];
+        } else {
+            return 0;
+        }
+    };
+
+    proto.inject = function() {
+        log("Mirin","injecting module",this.id,this.resources);
+        var i,
+            module = this,
+            set = this.resources,
+            injectQueue = [];
+
+        // init phase
+        for ( i in set ) {
+            var item = Mirin.getResourcePlugin(module, set[i], {
+                onInit:onItemInit,
+                onInject:onItemInject,
+                onLoad:onItemLoad
+            });
+            if ( item ) {
+                // only initialize items that have an assigned resourcePlugin
+                this.items.push(item);
+                if ( this.types.indexOf(item.pluginId) === -1 ) this.types.push(item.pluginId);
+                injectQueue.push(item);
+            } else {
+                log("Mirin", "skipped item, no applicable resourcePlugin", set[i]);
+            }
+        }
+
+        // inject phase
+        for ( i in injectQueue ) {
+            injectQueue[i].inject();
+        }
+
+
+        this.isInitialized=true;
+    };
+
+    function onItemInit(item) {
+        var module = item.module;
+        log("Mirin", "initialized", module.id, item.pluginId, item.url);
+        module.countEvent(item, ITEM_EVENTS.init);
+    }
+
     function onItemInject(item) {
-        // this = MirinItem
-        log("Mirin", "injected", item.module.id, item.resourcePlugin.id, item.url);
+        var module = item.module;
+        log("Mirin", "injected", module.id, item.pluginId, item.url);
+        module.countEvent(item, ITEM_EVENTS.inject);
     }
 
     function onItemLoad(item) {
-        // this = MirinItem
-        var url = item.url, 
-            type = item.resourcePlugin.id,
+        var i,
             module = item.module,
-            setCountObj = module.setCounts[type];
-        dispatch(EVENTS.progress, module.options, module, item);
-        setCountObj.loaded++;
+            type = item.pluginId;
+        log("Mirin", "loaded", module.id, item.pluginId, item.url);
+        module.countEvent(item, ITEM_EVENTS.load);
 
+        dispatch(EVENTS.progress, module.options, module, item);
+
+        // inform items that the whole set has been loaded
         if ( module.setIsLoaded(type) ) {
-            log("Mirin completed loading of", type, "set in module", module.id);
-            for ( var i in module.items ) {
-                var rp = module.items[i].resourcePlugin;
-                if ( rp.id == type ) rp.onSetLoaded(module);
+            log("Mirin completed loading of", item.pluginId, "set in module", module.id);
+            for ( i in module.items ) {
+                if ( module.items.pluginId == type ) {
+                    module.items[i].onSetLoaded(module);
+                }
             }
+            dispatch(EVENTS.setLoaded, module.options, module, module, type);
         }
 
+        // inform items that the whole module has been loaded
         if ( module.moduleIsLoaded() ) {
             log("Mirin completed loading of module", module.id, "in", new Date().getTime() - module.creationTime, "ms");
-            for ( var i in module.items ) {
-                module.items[i].resourcePlugin.onModuleLoaded(module);
+            for ( i in module.items ) {
+                module.items[i].onModuleLoaded(module);
             }
             dispatch(EVENTS.moduleLoaded, module.options, module, module);
         }

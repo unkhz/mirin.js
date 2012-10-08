@@ -4,7 +4,6 @@
 var root=this,
     Mirin,
     MirinModule,
-    MirinItem,
     MirinResourcePlugin,
 
     // top level options object, with defaults
@@ -13,6 +12,14 @@ var root=this,
         "url":null,               // if this is defined, extend resource collection with json from this url
         "debug":false,            // log debug information
         "sets":["js","css","html"] // resource sets to load
+    },
+
+    // every item goes through these steps
+    ITEM_EVENTS = {
+        "init":"init",
+        "inject":"inject",
+        "load":"load",
+        "complete":"complete"
     },
 
     // minification optimizations
@@ -51,7 +58,11 @@ function extend() {
         rest = arraySlice.call(arguments,1);
     for ( var i in rest ) {
         var src = rest[i];
-        if ( src ) for ( var j in src ) dest[j] = src[j];
+        if ( src ) {
+            for ( var j in src ) {
+                dest[j] = src[j];
+            }
+        }
     }
     return dest;
 }
@@ -62,7 +73,7 @@ function dispatch(eventName, listenerObject, contextObject){
     if ( callback ) {
         callback.apply(contextObject, arraySlice.call(arguments,3));
     }
-};
+}
 
 // fetch with ajax
 function fetch(url, callbackFunction) {

@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Mirin two module example</title>
-    <script type="text/javascript" src="../../dist/min.mirin.js"></script>
+    <script type="text/javascript" src="../../dist/mirin.js"></script>
     <script>
 
         // initialization is done as soon as mirin.js is loaded
@@ -10,16 +10,8 @@
         Mirin.init({
             debug:true,
             collection:{
-                "first-module":{
-                    js:["script1.js"],
-                    css:["style1.css"],
-                    html:["include1.html"]
-                },
-                "second-module":{
-                    js:["script2.js"],
-                    css:["style2.css"],
-                    html:["include2.html"]
-                }
+                "first-module":["script1.js", "style1.css", "include1.html"],
+                "second-module":["script2.js", "style2.css", "include2.html"]
             }
 
         });

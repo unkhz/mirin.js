@@ -2,6 +2,7 @@
 (function(){
 
     var resourceCollection = {},
+        resourcePlugins = {},
         modules = {};
 
 
@@ -11,7 +12,7 @@
 
         for ( var i in modules ) {
             var module = modules[i];
-            if ( module.isInjected === false ) {
+            if ( module.isInitialized === false ) {
                 module.resources = resourceCollection[module.id];
                 module.inject();
             }
@@ -44,6 +45,17 @@
             injectAll();
         },
         "modules":modules,
-        "collection":resourceCollection
+        "collection":resourceCollection,
+        "resourcePlugins":resourcePlugins,
+        "getResourcePlugin":function(module, resourceCollectionItem, aOptions){
+            // factory method
+            var i,rp;
+            for ( i in this.resourcePlugins ) {
+                rp = this.resourcePlugins[i];
+                if ( rp.matchItem(resourceCollectionItem) ) {
+                    return new rp(module, resourceCollectionItem, aOptions);
+                }
+            }
+        }
     };
 }());
