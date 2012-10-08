@@ -59,8 +59,6 @@
             var parent=this,
                 child;
 
-            console.log("EXTEND",prototype,parent);
-
             if (prototype && prototype.hasOwnProperty('constructor')) {
                 child = prototype.constructor;
             } else {
@@ -77,6 +75,9 @@
             extend(child.prototype, parent.prototype, prototype);
 
             child.extend = this.extend;
+
+            //Automatically register plugin for use
+            Mirin.resourcePlugins[child.pluginId] = child;
 
             return child;
         }

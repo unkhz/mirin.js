@@ -5,6 +5,8 @@
         resourcePlugins = {},
         modules = {};
 
+    // plugins indexed by their pluginId
+    MirinResourcePlugins = resourcePlugins;
 
     function injectAll() {
         // wait until resources exist

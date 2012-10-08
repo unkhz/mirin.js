@@ -5,6 +5,7 @@ var root=this,
     Mirin,
     MirinModule,
     MirinResourcePlugin,
+    MirinResourcePlugins,
 
     // top level options object, with defaults
     rootOptions = {

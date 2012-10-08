@@ -21,8 +21,8 @@
        <fileset file="${src.dir}/root.js" />
        <fileset file="${src.dir}/mirin.js" />
        <fileset file="${src.dir}/mirin_module.js" />
-       <fileset file="${src.dir}/mirin_item.js" />
-       <fileset file="${src.dir}/mirin_resource_plugins.js" />
+       <fileset file="${src.dir}/mirin_resource_plugin.js" />
+       <fileset dir="${src.dir}/plugins" includes="*" />
      </concat>
     <!-- wrap in closure -->
     <concat destfile="${dist.filename.cat}" append="true" fixlastline="yes">}());</concat>
