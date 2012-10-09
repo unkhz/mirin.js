@@ -28,7 +28,7 @@
     var proto = MirinModule.prototype;
 
     proto.setIsLoaded = function(type) {
-        return this.getEventCount(type,ITEM_EVENTS.init) === this.getEventCount(type,ITEM_EVENTS.inject) === this.getEventCount(type,ITEM_EVENTS.load);
+        return this.getEventCount(type,ITEM_EVENTS.init) === this.getEventCount(type,ITEM_EVENTS.load);
     };
 
     proto.moduleIsLoaded = function() {
@@ -120,8 +120,9 @@
         if ( module.setIsLoaded(type) ) {
             log("Mirin completed loading of", item.pluginId, "set in module", module.id);
             for ( i in module.items ) {
-                if ( module.items.pluginId == type ) {
-                    module.items[i].onSetLoaded(module);
+                var jtem = module.items[i];
+                if ( jtem.pluginId == type ) {
+                    jtem.onSetLoaded(module);
                 }
             }
             dispatch(EVENTS.setLoaded, module.options, module, module, type);

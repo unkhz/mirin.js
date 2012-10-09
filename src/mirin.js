@@ -1,7 +1,7 @@
 /* Mirin (Singleton) */
 (function(){
 
-    var resourceCollection = {},
+    var resourceCollection = null,
         resourcePlugins = {},
         modules = {};
 

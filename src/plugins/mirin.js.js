@@ -16,7 +16,7 @@
         matchExp : /\.js$/i,
         inject: function() {
             var item = this,
-                el = createElement("script"),
+                el = this.el = createElement("script"),
                 elProperties = {
                     type:"text/javascript",
                     src:item.url
@@ -33,7 +33,6 @@
                     }
                 };
                 extend(el, elProperties);
-                dispatch(ITEM_EVENTS.init,this.options,this,this);
             } else {
                 // Others need the element to be appended to start fetch
                 elProperties.onload=function(){
