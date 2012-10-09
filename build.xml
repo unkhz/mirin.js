@@ -5,7 +5,6 @@
   <property name="dist.dir" location="dist"/>
   <property name="dist.filename.cat" location="${dist.dir}/mirin.js"/>
   <property name="dist.filename.min" location="${dist.dir}/min.mirin.js"/>
-  <echo>creating ${dist.filename.min}</echo>
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -36,8 +35,6 @@
       <arg value="${dist.filename.min}"/>
       <arg value="--compilation_level"/>
       <arg value="SIMPLE_OPTIMIZATIONS"/>
-      <arg value="--externs"/>
-      <arg value="externs.js"/>
     </java>
   </target>
 
