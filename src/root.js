@@ -77,21 +77,27 @@ function dispatch(eventName, listenerObject, contextObject){
 }
 
 // fetch with ajax
-function fetch(url, callbackFunction) {
+function fetch(url, success, error) {
     var xhr = new XMLHttpRequest(),
         finished=false;
     xhr.open("GET", url, true);
     xhr.onload = xhr.onreadystatechange = function(e){
-        var response;
+        var response, status;
         try {
             // need to catch error, when xhr is aborted on IE
             response=e.target.responseText;
+            status=e.target.status;
         } catch(ee) {
         }
 
         if ( response && !finished ) {
             finished = true;
-            callbackFunction.call(this, response);
+            if ( status === 200 ) {
+                if ( success ) success.call(this, response);
+            } else {
+                if ( error ) error.call(this, response);
+                else throw(new Error("Ajax returned " + status + " fetching " + url));
+            }
         }
     };
     xhr.send(null);
