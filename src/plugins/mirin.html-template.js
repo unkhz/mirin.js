@@ -2,11 +2,13 @@
 (function(){
     MirinResourcePlugin.extend({
         pluginId : "html-template",
-        matchExp : /templates\/.*\.html$/i,
+        matchExp : /(templates\/.*\.html|tpl\.html|\.hbs)$/i,
         inject: function() {
             var item = this,
                 el = extend(createElement("script"),{
-                    type:"text/html"
+                    type:"text/html",
+                    // hsb/dashboard_page.html -> #hsb-dashboard-page
+                    id:this.url.replace(/[_\/]/g, "-").replace(/\.h(tml|bs)$/i,'')
                 });
             document.head.appendChild(el);
             dispatch(ITEM_EVENTS.inject,item.options,item,item);

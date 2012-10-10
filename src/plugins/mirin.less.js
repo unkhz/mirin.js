@@ -15,11 +15,12 @@
                     type:"text/css",
                     href:item.url
                 });
-            try {
-                // less.js annoyingly caches the parsed files into localStorage,
-                // which provides no use for development, so we turn it off here
+                
+            if ( window.localStorage ) {
+                // less.js caches parsed files into localStorage, which
+                // provides no use for development, so we turn it off here
                 var loc = window.location,
-                    keyPrefix = loc.protocol + '//' + loc.location.host + loc.pathname + item.url;
+                    keyPrefix = loc.href.replace(/(\?.*)?(#.*)?$/, '') + item.url;
 
                 for (var key in window.localStorage) {
                     if (key.indexOf(keyPrefix) === 0) {
@@ -27,6 +28,7 @@
                     }
                 }
             }
+
             document.head.appendChild(el);
             dispatch(ITEM_EVENTS.inject,item.options,item,item);
             dispatch(ITEM_EVENTS.load,item.options,item,item);
