@@ -1,4 +1,4 @@
-/* MirinResourcePlugin (Factory) */
+/* MirinItem */
 
 (function(){
 
@@ -8,11 +8,11 @@
         onLoad:null
     };
 
-    // MirinResourcePlugin constructor
+    // MirinItem constructor
     // may be extended
-    var stat = MirinResourcePlugin = function(module, resourceCollectionItem, aOptions) {
-        // ResourceItem inherits ALL properties from the resouce collection item
-        extend(this, stat.mapItem(resourceCollectionItem), {
+    var stat = MirinItem = function(module, resourceItem, aOptions) {
+        // MirinItem inherits ALL properties from the resouce collection item
+        extend(this, stat.mapItem(resourceItem), {
             options:extend({},defaultOptions,aOptions),
             module:module
         });
@@ -20,13 +20,13 @@
     };
 
 
-    /* MirinResourcePlugin static properties and methods */
-    extend(MirinResourcePlugin, {
+    /* MirinItem static properties and methods */
+    extend(MirinItem, {
 
         // unique id for the plugin, mandatory extend
         pluginId:null,
 
-        // match resourceCollectionItem, mandatory extend
+        // match resourceItem, mandatory extend
         matchExp:null,
         
 
@@ -42,13 +42,13 @@
             }
         },
 
-        // how resourceCollection JSON is mapped to  a resourceItem
-        mapItem:function(collectionItem){
-            if ( typeof collectionItem === 'string' ) {
+        // how resource collection items are mapped into MirinItems
+        mapItem:function(resourceItem){
+            if ( typeof resourceItem === 'string' ) {
                 // plain text items are assumed to be urls
-                return {url:collectionItem};
+                return {url:resourceItem};
             } else {
-                return collectionItem;
+                return resourceItem;
             }
 
         },
@@ -76,15 +76,15 @@
 
             child.extend = this.extend;
 
-            //Automatically register plugin for use
-            Mirin.resourcePlugins[child.pluginId] = child;
+            // Automatically register plugin for use
+            plugins[child.pluginId] = child;
 
             return child;
         }
     });
 
-    /* MirinResourcePlugin prototype methods */
-    extend(MirinResourcePlugin.prototype, {
+    /* MirinItem prototype methods */
+    extend(MirinItem.prototype, {
 
         // inject resource into DOM, mandatory extend
         inject:function(){},

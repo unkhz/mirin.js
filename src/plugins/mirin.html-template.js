@@ -1,6 +1,6 @@
 /* html-template */
 (function(){
-    MirinResourcePlugin.extend({
+    MirinItem.extend({
         pluginId : "html-template",
         matchExp : /(templates\/.*\.html|tpl\.html|\.hbs)$/i,
         inject: function() {

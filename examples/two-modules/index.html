@@ -9,9 +9,9 @@
         
         Mirin.init({
             debug:true,
-            collection:{
-                "first-module":["script1.js", "style1.css", "include1.html"],
-                "second-module":["script2.js", "style2.css", "include2.html"]
+            resources:{
+                "first_module":["script1.js", "style1.css", "include1.html"],
+                "second_module":["script2.js", "style2.css", "include2.html"]
             }
 
         });
@@ -20,9 +20,9 @@
         // here, depending on user click actions
 
         function injectFirst() {
-            Mirin.inject("first-module", {
+            Mirin.inject("first_module", {
                 // onModuleLoaded will fire when all the module resources have been injected and loaded
-                onModuleLoaded:function(){
+                onModuleLoad:function(){
                     console.log("First module injection complete");
                     runFirst();
                 }
@@ -30,16 +30,16 @@
         }
 
         function injectSecond() {
-            Mirin.inject("second-module", {
+            Mirin.inject("second_module", {
                 
-                // onProgress will fire when ever one item has completed loading
+                // onItemLoad will fire when ever one item has completed loading
 
-                onProgress:function(module){
+                onItemLoad:function(module){
                 },
 
-                // onModuleLoaded will fire when all the module resources have been injected and loaded
+                // onModuleLoad will fire when all the module resources have been injected and loaded
                 
-                onModuleLoaded:function(){
+                onModuleLoad:function(){
                     console.log("Second module injection complete");
                     runSecond();
                 }

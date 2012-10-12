@@ -1,6 +1,6 @@
 /* css */
 (function(){
-    MirinResourcePlugin.extend({
+    MirinItem.extend({
         pluginId : "css",
         matchExp : /\.css$/i,
         inject: function() {

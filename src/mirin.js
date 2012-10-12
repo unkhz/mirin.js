@@ -1,21 +1,14 @@
-/* Mirin (Singleton) */
+/* Mirin (Static Manager) */
 (function(){
-
-    var resourceCollection = null,
-        resourcePlugins = {},
-        modules = {};
-
-    // plugins indexed by their pluginId
-    MirinResourcePlugins = resourcePlugins;
 
     function injectAll() {
         // wait until resources exist
-        if (!resourceCollection) return;
+        if (!resources) return;
 
         for ( var i in modules ) {
             var module = modules[i];
             if ( module.isInitialized === false ) {
-                module.resources = resourceCollection[module.id];
+                module.resources = resources[module.id];
                 module.inject();
             }
         }
@@ -27,16 +20,16 @@
             extend(rootOptions,aOptions);
 
             // initial resource collection
-            if ( rootOptions.collection ) {
-                resourceCollection = rootOptions['collection'];
+            if ( rootOptions.resources ) {
+                resources = rootOptions['resources'];
                 injectAll();
             }
 
-            // possibly fetch collection from url
+            // possibly fetch resource collection from url
             if ( rootOptions.url ) {
                 fetch(rootOptions.url, function(data){
                     log("Mirin", "loaded resource collection from", rootOptions.url);
-                    resourceCollection = JSON.parse(data);
+                    resources = JSON.parse(data);
                     injectAll();
                 });
             }
@@ -44,13 +37,13 @@
         "inject":function(module, aOptions) {
             var moduleId;
             if ( typeof module === "object" ) {
-                // custom module, not from resourceCollection
+                // custom module, not from resource collection
                 moduleId = "custom_" + new Date().getTime();
                 modules[moduleId] = new MirinModule(moduleId, aOptions);
                 modules[moduleId].resources = module;
                 modules[moduleId].inject();
             } else {
-                // predefined module from resourceCollection
+                // predefined module from resource collection
                 moduleId = module;
                 if ( modules[moduleId] ) throw(new Error("Module already injected"));
                 modules[moduleId] = new MirinModule(moduleId, aOptions);
@@ -58,7 +51,7 @@
             }
         },
         "modules":modules,
-        "collection":resourceCollection,
-        "resourcePlugins":resourcePlugins
+        "resources":resources,
+        "plugins":plugins
     };
 }());

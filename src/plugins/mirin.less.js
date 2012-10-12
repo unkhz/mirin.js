@@ -5,7 +5,7 @@
  */
 
 (function(){
-    MirinResourcePlugin.extend({
+    MirinItem.extend({
         pluginId : "less",
         matchExp : /\.less$/i,
         inject: function() {

@@ -1,6 +1,6 @@
 /* html-include */
 (function(){
-    MirinResourcePlugin.extend({
+    MirinItem.extend({
         pluginId : "html",
         matchExp : /\.html$/i,
         inject: function() {

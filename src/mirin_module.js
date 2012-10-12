@@ -1,15 +1,15 @@
 /* MirinModule */
 (function(){
     var defaultOptions = {
-            "onProgress":null,    // fires when single item of any set is loaded
-            "onSetLoaded":null,    // fires when a set is loaded
-            "onModuleLoaded":null, // fires when the whole module is loaded
+            "onItemLoad":null,    // fires when single item of any set is loaded
+            "onSetLoad":null,    // fires when a set is loaded
+            "onModuleLoad":null, // fires when the whole module is loaded
             "plugins":[]           // enabled plugins
         },
         EVENTS = {
-            progress:"progress",
-            setLoaded:"setLoaded",
-            moduleLoaded:"moduleLoaded"
+            itemLoad:"itemLoad",
+            setLoad:"setLoad",
+            moduleLoad:"moduleLoad"
         };
 
 
@@ -55,20 +55,20 @@
     };
 
     proto.getEventCount = function(pluginId,eventId){
-        if ( this.setCounts && this.setCounts[pluginId] && this.setCounts[pluginId][eventId]) {
-            return this.setCounts[pluginId][eventId];
+        var counterObj = this.setCounts[pluginId];
+        if ( counterObj && counterObj[eventId]) {
+            return counterObj[eventId];
         } else {
             return 0;
         }
     };
 
-    proto.getResourcePlugin = function(resourceCollectionItem, aOptions){
-        // factory method
-        var i,rp;
-        for ( i in MirinResourcePlugins ) {
-            rp = MirinResourcePlugins[i];
-            if ( rp.matchItem(resourceCollectionItem) && this.options.plugins.indexOf(rp.pluginId) >= 0 ) {
-                return new rp(this, resourceCollectionItem, aOptions);
+    proto.createItem = function(resourceItem, aOptions){
+        var i,plugin;
+        for ( i in plugins ) {
+            plugin = plugins[i];
+            if ( plugin.matchItem(resourceItem) && this.options.plugins.indexOf(plugin.pluginId) >= 0 ) {
+                return new plugin(this, resourceItem, aOptions);
             }
         }
     };
@@ -82,7 +82,7 @@
 
         // init phase
         for ( i in set ) {
-            var item = this.getResourcePlugin(set[i], {
+            var item = this.createItem(set[i], {
                 onInit:onItemInit,
                 onInject:onItemInject,
                 onLoad:onItemLoad
@@ -125,7 +125,7 @@
         log("Mirin", "loaded", module.id, item.pluginId, item.url);
         module.countEvent(item, ITEM_EVENTS.load);
 
-        dispatch(EVENTS.progress, module.options, module, item);
+        dispatch(EVENTS.itemLoad, module.options, module, item);
 
         // inform items that the whole set has been loaded
         if ( module.setIsLoaded(type) ) {
@@ -136,7 +136,7 @@
                     jtem.onSetLoaded(module);
                 }
             }
-            dispatch(EVENTS.setLoaded, module.options, module, module, type);
+            dispatch(EVENTS.setLoad, module.options, module, module, type);
         }
 
         // inform items that the whole module has been loaded
@@ -145,7 +145,7 @@
             for ( i in module.items ) {
                 module.items[i].onModuleLoaded(module);
             }
-            dispatch(EVENTS.moduleLoaded, module.options, module, module);
+            dispatch(EVENTS.moduleLoad, module.options, module, module);
         }
     }
 }());

@@ -11,7 +11,7 @@
     }
     var appendQueue = {};
 
-    MirinResourcePlugin.extend({
+    MirinItem.extend({
         pluginId : "js",
         matchExp : /\.js$/i,
         inject: function() {

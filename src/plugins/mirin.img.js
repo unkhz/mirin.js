@@ -2,8 +2,7 @@
  * preloads images, without injection
  */
 (function(){
-    
-    MirinResourcePlugin.extend({
+    MirinItem.extend({
         pluginId : "img",
         matchExp : /\.(jpg|png|gif|svg)$/i,
         inject: function() {

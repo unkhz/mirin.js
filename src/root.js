@@ -2,14 +2,20 @@
 /* Mirin.js */
 
 var root=this,
+
+    // Classes
     Mirin,
     MirinModule,
-    MirinResourcePlugin,
-    MirinResourcePlugins,
+    MirinItem,
+
+    // Collections
+    resources = null,
+    modules = {},
+    plugins = [],
 
     // top level options object, with defaults
     rootOptions = {
-        "collection":null,        // if this is defined, use this as the initial resource collection
+        "resources":null,        // if this is defined, use this as the initial resource collection
         "url":null,               // if this is defined, extend resource collection with json from this url
         "debug":false,            // log debug information
         "plugins":["js","css","html"] // enabled plugins
@@ -19,8 +25,7 @@ var root=this,
     ITEM_EVENTS = {
         "init":"init",
         "inject":"inject",
-        "load":"load",
-        "complete":"complete"
+        "load":"load"
     },
 
     // minification optimizations
@@ -101,4 +106,4 @@ function fetch(url, success, error) {
         }
     };
     xhr.send(null);
-};
+}
