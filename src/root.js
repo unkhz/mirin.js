@@ -12,7 +12,7 @@ var root=this,
         "collection":null,        // if this is defined, use this as the initial resource collection
         "url":null,               // if this is defined, extend resource collection with json from this url
         "debug":false,            // log debug information
-        "sets":["js","css","html"] // resource sets to load
+        "plugins":["js","css","html"] // enabled plugins
     },
 
     // every item goes through these steps

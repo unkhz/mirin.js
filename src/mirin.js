@@ -41,23 +41,24 @@
                 });
             }
         },
-        "inject":function(moduleId, aOptions){
-            if ( modules[moduleId] ) throw(new Error("Module already injected"));
-            modules[moduleId] = new MirinModule(moduleId, aOptions);
-            injectAll();
+        "inject":function(module, aOptions) {
+            var moduleId;
+            if ( typeof module === "object" ) {
+                // custom module, not from resourceCollection
+                moduleId = "custom_" + new Date().getTime();
+                modules[moduleId] = new MirinModule(moduleId, aOptions);
+                modules[moduleId].resources = module;
+                modules[moduleId].inject();
+            } else {
+                // predefined module from resourceCollection
+                moduleId = module;
+                if ( modules[moduleId] ) throw(new Error("Module already injected"));
+                modules[moduleId] = new MirinModule(moduleId, aOptions);
+                injectAll();
+            }
         },
         "modules":modules,
         "collection":resourceCollection,
-        "resourcePlugins":resourcePlugins,
-        "getResourcePlugin":function(module, resourceCollectionItem, aOptions){
-            // factory method
-            var i,rp;
-            for ( i in this.resourcePlugins ) {
-                rp = this.resourcePlugins[i];
-                if ( rp.matchItem(resourceCollectionItem) ) {
-                    return new rp(module, resourceCollectionItem, aOptions);
-                }
-            }
-        }
+        "resourcePlugins":resourcePlugins
     };
 }());

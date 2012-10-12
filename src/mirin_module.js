@@ -4,7 +4,7 @@
             "onProgress":null,    // fires when single item of any set is loaded
             "onSetLoaded":null,    // fires when a set is loaded
             "onModuleLoaded":null, // fires when the whole module is loaded
-            "sets":[]           // sets to inject
+            "plugins":[]           // enabled plugins
         },
         EVENTS = {
             progress:"progress",
@@ -14,7 +14,7 @@
 
 
     MirinModule = function(moduleId, aOptions){
-        var opts = this.options = extend({},defaultOptions,{"sets":rootOptions['sets']},aOptions);
+        var opts = this.options = extend({},defaultOptions,{"plugins":rootOptions['plugins']},aOptions);
         extend(this,{
             id:moduleId,
             isInitialized:false,
@@ -62,6 +62,17 @@
         }
     };
 
+    proto.getResourcePlugin = function(resourceCollectionItem, aOptions){
+        // factory method
+        var i,rp;
+        for ( i in MirinResourcePlugins ) {
+            rp = MirinResourcePlugins[i];
+            if ( rp.matchItem(resourceCollectionItem) && this.options.plugins.indexOf(rp.pluginId) >= 0 ) {
+                return new rp(this, resourceCollectionItem, aOptions);
+            }
+        }
+    };
+
     proto.inject = function() {
         log("Mirin","injecting module",this.id,this.resources);
         var i,
@@ -71,7 +82,7 @@
 
         // init phase
         for ( i in set ) {
-            var item = Mirin.getResourcePlugin(module, set[i], {
+            var item = this.getResourcePlugin(set[i], {
                 onInit:onItemInit,
                 onInject:onItemInject,
                 onLoad:onItemLoad
