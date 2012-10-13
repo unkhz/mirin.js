@@ -4,12 +4,21 @@
   <property name="src.dir" location="src"/>
   <property name="dist.dir" location="dist"/>
   
+  <!-- plugins default to all. list can be overridden with a comma delimited list -->
+  <property name="plugins" value="*" />
+
   <!-- development version with logging capability -->
   <property name="dist.filename.debug" location="${dist.dir}/mirin.debug.js"/>
   
   <!-- production versions without logging capability -->
   <property name="dist.filename.cat" location="${dist.dir}/mirin.js"/>
   <property name="dist.filename.min" location="${dist.dir}/mirin.min.js"/>
+
+  <taskdef resource="net/sf/antcontrib/antlib.xml">
+    <classpath>
+      <pathelement location="tools/ant-contrib-1.0b3.jar"/>
+    </classpath>
+  </taskdef>
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -26,8 +35,15 @@
        <fileset file="${src.dir}/mirin.js" />
        <fileset file="${src.dir}/mirin_module.js" />
        <fileset file="${src.dir}/mirin_item.js" />
-       <fileset dir="${src.dir}/plugins" includes="*" />
-     </concat>
+    </concat>
+    <for list="${plugins}" delimiter="," param="plugin">
+      <sequential>
+        <echo>Including plugin @{plugin}</echo>
+        <concat destfile="${dist.filename.debug}" append="true" fixlastline="yes">
+          <fileset dir="${src.dir}/plugins" includes="mirin.@{plugin}.js" />
+        </concat>
+      </sequential>
+    </for>
     <!-- wrap in closure -->
     <concat destfile="${dist.filename.debug}" append="true" fixlastline="yes">}());</concat>
   </target>
@@ -41,7 +57,7 @@
   </target>
 
   <target name="compile" depends="init,concat,remove.debug" description="compile the source ">
-    <java jar="compiler.jar" fork="true">
+    <java jar="tools/compiler.jar" fork="true">
       <arg value="--js"/>
       <arg value="${dist.filename.cat}"/>
       <arg value="--js_output_file"/>
