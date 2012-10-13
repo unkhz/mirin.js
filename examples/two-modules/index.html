@@ -32,7 +32,7 @@
                         runFirst();
 
                         // context stays
-                        console.log("On callback, this is", this, btn,"and inject time context", injectContextIsAvailable);
+                        console.log("On callback, this is", this, "and inject time context", injectContextIsAvailable);
                         var btn = document.getElementById("btn-first");
                         btn.innerHTML = "Done";
                     }
@@ -62,7 +62,7 @@
                         runSecond();
 
                         // context stays
-                        console.log("On callback, this is",this, btn, "and inject time context", injectContextIsAvailable);
+                        console.log("On callback, this is",this, "and inject time context", injectContextIsAvailable);
                         var btn = document.getElementById("btn-second");
                         btn.innerHTML = "Done";
                     }

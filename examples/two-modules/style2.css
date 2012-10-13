@@ -12,9 +12,5 @@ p.inc-second {
 }
 #second img {
     width:100%;
-}
-#second .img-wrapper {
-    height: 9em;
     border: 1px solid #008800;
-    overflow:hidden;
 }
