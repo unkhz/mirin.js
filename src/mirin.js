@@ -52,6 +52,9 @@
                 injectAll();
             }
         },
+        "remove":function(moduleId) {
+            return modules[moduleId].remove();
+        },
         "modules":modules,
         "resources":resources,
         "plugins":plugins

@@ -5,6 +5,7 @@
         matchExp : /\.html$/i,
         inject: function() {
             var item = this;
+            this.elements = [];
             // html-include does not create an element, instead it injects a string
             // which may contain any number of elements or text nodes
             fetch(item.url, function(data) {
@@ -14,10 +15,19 @@
                     var el = wrap.children[i];
                     // append elements one by one to avoid full page repaint
                     document.body.appendChild(el);
+                    item.elements.push(el);
                 }
                 dispatch(ITEM_EVENTS.inject,item.options,item,item);
                 dispatch(ITEM_EVENTS.load,item.options,item,item);
             });
+        },
+
+        remove: function() {
+            for ( var i in this.elements ) {
+                var el = this.elements[i];
+                el.parentNode.removeChild(el);
+                delete this.elements[i];
+            }
         }
 
         /*

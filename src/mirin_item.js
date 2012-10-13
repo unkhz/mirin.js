@@ -90,15 +90,21 @@
         // inject resource into DOM, mandatory extend
         inject:noop,
         
-        // remove resource from DOM, mandatory extend
-        remove:noop,
+        // remove resource from DOM and memory
+        remove:function(){
+            if ( this.el && this.el.parentNode ) {
+                this.el.parentNode.removeChild(this.el);
+            }
+            delete this.el;
+        },
 
         // called when whole set of plugins items have been loaded
         onSetLoad:noop,
 
         // called when the whole module has been loaded
         onModuleLoad:noop
-        
+
     });
 
 }());
+

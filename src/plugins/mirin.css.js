@@ -5,7 +5,7 @@
         matchExp : /\.css$/i,
         inject: function() {
             var item = this,
-                el = extend(createElement("link"), {
+                el = this.el = extend(createElement("link"), {
                     rel:"stylesheet",
                     href:item.url
                 });
@@ -14,7 +14,7 @@
             // FIXME: CSS files are faked to be loaded immediately, since we cant use onload method
             dispatch(ITEM_EVENTS.load,item.options,item,item);
         }
-
+        
         /*
 
         onSetLoad: function() {
