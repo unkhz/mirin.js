@@ -16,14 +16,17 @@
                 el.innerHTML = data;
                 dispatch(ITEM_EVENTS.load,item.options,item,item);
             });
+        }
+
+        /*
+        onSetLoad: function() {
+
         },
 
-        onSetLoaded: function() {
-
-        },
-
-        onModuleLoaded: function() {
+        onModuleLoad: function() {
 
         }
+
+        */
     });
 }());

@@ -12,14 +12,18 @@
                 dispatch(ITEM_EVENTS.inject,item.options,item,item);
                 dispatch(ITEM_EVENTS.load,item.options,item,item);
             });
+        }
+
+        /*
+
+        onSetLoad: function() {
+
         },
 
-        onSetLoaded: function() {
-
-        },
-
-        onModuleLoaded: function() {
+        onModuleLoad: function() {
 
         }
+
+        */
     });
 }());

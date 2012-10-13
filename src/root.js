@@ -17,7 +17,9 @@ var root=this,
     rootOptions = {
         "resources":null,        // if this is defined, use this as the initial resource collection
         "url":null,               // if this is defined, extend resource collection with json from this url
+        //BEGIN_DEBUG
         "debug":false,            // log debug information
+        //END_DEBUG
         "plugins":["js","css","html"] // enabled plugins
     },
 
@@ -44,7 +46,8 @@ var root=this,
         return v > 4 ? v : undef;
     }());
 
-// FIXME: remove this on minified version
+// Log function will be available only in debug version
+//BEGIN_DEBUG
 function log() {
     var c = window.console;
     if (rootOptions.debug && c && c.log) {
@@ -58,6 +61,7 @@ function log() {
         }
     }
 }
+//END_DEBUG
 
 function extend() {
     var dest = arguments[0],
@@ -77,7 +81,11 @@ function dispatch(eventName, listenerObject, contextObject){
     var callbackName = "on"+ eventName[0].toUpperCase() + eventName.slice(1),
         callback = listenerObject[callbackName];
     if ( callback ) {
-        callback.apply(contextObject, arraySlice.call(arguments,3));
+        if ( contextObject ) {
+            callback.apply(contextObject, arraySlice.call(arguments,3));
+        } else {
+            callback.apply(listenerObject, arraySlice.call(arguments,3));
+        }
     }
 }
 
@@ -100,8 +108,11 @@ function fetch(url, success, error) {
             if ( status === 200 ) {
                 if ( success ) success.call(this, response);
             } else {
-                if ( error ) error.call(this, response);
-                else throw(new Error("Ajax returned " + status + " fetching " + url));
+                if ( error ) {
+                    error.call(this, response);
+                } else{
+                    throw(new Error("Ajax returned " + status + " fetching " + url));
+                }
             }
         }
     };

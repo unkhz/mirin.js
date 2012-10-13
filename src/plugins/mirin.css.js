@@ -13,14 +13,18 @@
             dispatch(ITEM_EVENTS.inject,item.options,item,item);
             // FIXME: CSS files are faked to be loaded immediately, since we cant use onload method
             dispatch(ITEM_EVENTS.load,item.options,item,item);
+        }
+
+        /*
+
+        onSetLoad: function() {
+
         },
 
-        onSetLoaded: function() {
-
-        },
-
-        onModuleLoaded: function() {
+        onModuleLoad: function() {
 
         }
+
+        */
     });
 }());

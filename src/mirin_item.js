@@ -2,10 +2,11 @@
 
 (function(){
 
-    var defaultOptions = {
-        onInit:null,
-        onInject:null,
-        onLoad:null
+    var noop = function(){},
+        defaultOptions = {
+        onInit:noop,
+        onInject:noop,
+        onLoad:noop
     };
 
     // MirinItem constructor
@@ -87,10 +88,17 @@
     extend(MirinItem.prototype, {
 
         // inject resource into DOM, mandatory extend
-        inject:function(){},
+        inject:noop,
         
-        // rmove resource from DOM, mandatory extend
-        remove:function(){}
+        // remove resource from DOM, mandatory extend
+        remove:noop,
+
+        // called when whole set of plugins items have been loaded
+        onSetLoad:noop,
+
+        // called when the whole module has been loaded
+        onModuleLoad:noop
+        
     });
 
 }());

@@ -3,8 +3,13 @@
   <!-- set global properties for this build -->
   <property name="src.dir" location="src"/>
   <property name="dist.dir" location="dist"/>
+  
+  <!-- development version with logging capability -->
+  <property name="dist.filename.debug" location="${dist.dir}/mirin.debug.js"/>
+  
+  <!-- production versions without logging capability -->
   <property name="dist.filename.cat" location="${dist.dir}/mirin.js"/>
-  <property name="dist.filename.min" location="${dist.dir}/min.mirin.js"/>
+  <property name="dist.filename.min" location="${dist.dir}/mirin.min.js"/>
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -15,8 +20,8 @@
 
   <target name="concat" depends="init" description="concat the source">
     <!-- wrap in closure -->
-    <concat destfile="${dist.filename.cat}" fixlastline="yes">;(function(){</concat>
-    <concat destfile="${dist.filename.cat}" append="true" fixlastline="yes">
+    <concat destfile="${dist.filename.debug}" fixlastline="yes">;(function(){</concat>
+    <concat destfile="${dist.filename.debug}" append="true" fixlastline="yes">
        <fileset file="${src.dir}/root.js" />
        <fileset file="${src.dir}/mirin.js" />
        <fileset file="${src.dir}/mirin_module.js" />
@@ -24,10 +29,18 @@
        <fileset dir="${src.dir}/plugins" includes="*" />
      </concat>
     <!-- wrap in closure -->
-    <concat destfile="${dist.filename.cat}" append="true" fixlastline="yes">}());</concat>
+    <concat destfile="${dist.filename.debug}" append="true" fixlastline="yes">}());</concat>
   </target>
 
-  <target name="compile" depends="init,concat" description="compile the source ">
+  <target name="remove.debug" depends="init,concat" description="remove logging and debug functionality">
+    <!-- comment out all logging, so that the strings don't bloat the minified code -->
+    <copy file="${dist.filename.debug}" tofile="${dist.filename.cat}" />
+    <replace file="${dist.filename.cat}" token="//BEGIN_DEBUG" value="/*" />
+    <replace file="${dist.filename.cat}" token="//END_DEBUG" value="*/" />
+    <replace file="${dist.filename.cat}" token="log(" value="//log(" />
+  </target>
+
+  <target name="compile" depends="init,concat,remove.debug" description="compile the source ">
     <java jar="compiler.jar" fork="true">
       <arg value="--js"/>
       <arg value="${dist.filename.cat}"/>

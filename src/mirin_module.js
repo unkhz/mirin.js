@@ -125,7 +125,7 @@
         log("Mirin", "loaded", module.id, item.pluginId, item.url);
         module.countEvent(item, ITEM_EVENTS.load);
 
-        dispatch(EVENTS.itemLoad, module.options, module, item);
+        dispatch(EVENTS.itemLoad, module.options, null, module, item);
 
         // inform items that the whole set has been loaded
         if ( module.setIsLoaded(type) ) {
@@ -133,19 +133,19 @@
             for ( i in module.items ) {
                 var jtem = module.items[i];
                 if ( jtem.pluginId == type ) {
-                    jtem.onSetLoaded(module);
+                    jtem.onSetLoad(module);
                 }
             }
-            dispatch(EVENTS.setLoad, module.options, module, module, type);
+            dispatch(EVENTS.setLoad, module.options, null, module, type);
         }
 
         // inform items that the whole module has been loaded
         if ( module.moduleIsLoaded() ) {
             log("Mirin completed loading of module", module.id, "in", new Date().getTime() - module.creationTime, "ms");
             for ( i in module.items ) {
-                module.items[i].onModuleLoaded(module);
+                module.items[i].onModuleLoad(module);
             }
-            dispatch(EVENTS.moduleLoad, module.options, module, module);
+            dispatch(EVENTS.moduleLoad, module.options, null, module);
         }
     }
 }());

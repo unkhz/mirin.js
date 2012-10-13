@@ -45,7 +45,9 @@
             } else {
                 // predefined module from resource collection
                 moduleId = module;
-                if ( modules[moduleId] ) throw(new Error("Module already injected"));
+                if ( modules[moduleId] ) {
+                    throw(new Error("Module already injected"));
+                }
                 modules[moduleId] = new MirinModule(moduleId, aOptions);
                 injectAll();
             }

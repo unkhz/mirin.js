@@ -45,16 +45,20 @@
             }
         },
 
-        onSetLoaded: function(module) {
+        onSetLoad: function(module) {
             // on IE, we inject all scripts when everything is loaded
             // to preserve parsing order
             document.head.appendChild(this.el);
             dispatch(ITEM_EVENTS.inject,this.options,this,this);
-        },
+        }
 
-        onModuleLoaded: function(module) {
+        /*
+
+        onModuleLoad: function(module) {
 
         }
+        
+        */
     });
 
 }());
