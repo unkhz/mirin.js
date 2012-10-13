@@ -10,7 +10,7 @@
         matchExp : /\.less$/i,
         inject: function() {
             var item = this,
-                el = extend(createElement("link"), {
+                el = this.el = extend(createElement("link"), {
                     rel:"stylesheet/less",
                     type:"text/css",
                     href:item.url

@@ -34,12 +34,13 @@
                         // context stays
                         console.log("On callback, this is", this, "and inject time context", injectContextIsAvailable);
                         var btn = document.getElementById("btn-first");
-                        btn.innerHTML = "Done";
+                        btn.innerHTML = "Remove";
                     }
                 });
             } catch(ee) {
-                btn.innerHTML = "Error, " + ee.message;
-                throw(ee);
+                // an error is returned, if module is already injected
+                Mirin.remove("first_module");
+                btn.innerHTML = "First module";
             }
         }
 
@@ -64,12 +65,13 @@
                         // context stays
                         console.log("On callback, this is",this, "and inject time context", injectContextIsAvailable);
                         var btn = document.getElementById("btn-second");
-                        btn.innerHTML = "Done";
+                        btn.innerHTML = "Remove";
                     }
                 });
             } catch(ee) {
-                btn.innerHTML = "Error, " + ee.message;
-                throw(ee);
+                // an error is returned, if module is already injected
+                Mirin.remove("second_module");
+                btn.innerHTML = "Second module";
             }
         }
 

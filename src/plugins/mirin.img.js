@@ -22,6 +22,10 @@
 
         /*
 
+        remove: function() {
+            this.el.parentNode.removeChild(this.el);
+        },
+
         onSetLoad: function(module) {
         },
 

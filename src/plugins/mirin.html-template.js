@@ -5,7 +5,7 @@
         matchExp : /(templates\/.*\.html|tpl\.html|\.hbs)$/i,
         inject: function() {
             var item = this,
-                el = extend(createElement("script"),{
+                el = this.el = extend(createElement("script"),{
                     type:"text/html",
                     // hsb/dashboard_page.html -> #hsb-dashboard-page
                     id:this.url.replace(/[_\/]/g, "-").replace(/\.h(tml|bs)$/i,'')

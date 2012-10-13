@@ -106,6 +106,16 @@
         this.isInitialized=true;
     };
 
+    proto.remove = function() {
+        for ( var i in this.items ) {
+            log("Mirin", "removing", this.id, this.items[i].pluginId, this.items[i].url);
+            this.items[i].remove();
+            delete this.items[i];
+        }
+        delete this.items;
+        delete Mirin.modules[this.id];
+    };
+
     function onItemInit(item) {
         var module = item.module;
         log("Mirin", "initialized", module.id, item.pluginId, item.url);
