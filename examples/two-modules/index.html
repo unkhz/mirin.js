@@ -2,16 +2,17 @@
 <html>
 <head>
     <title>Mirin two module example</title>
-    <script type="text/javascript" src="../../dist/mirin.js"></script>
+    <script type="text/javascript" src="../../dist/mirin.debug.js"></script>
     <script>
 
         // initialization is done as soon as mirin.js is loaded
         
         Mirin.init({
             debug:true,
+            plugins:["js","css","html","img"],
             resources:{
-                "first_module":["script1.js", "style1.css", "include1.html"],
-                "second_module":["script2.js", "style2.css", "include2.html"]
+                "first_module":["script1.js", "style1.css", "include1.html", "1164615_57872278.jpg"],
+                "second_module":["script2.js", "style2.css", "include2.html", "999332_37586099.jpg"]
             }
 
         });
@@ -20,30 +21,56 @@
         // here, depending on user click actions
 
         function injectFirst() {
-            Mirin.inject("first_module", {
-                // onModuleLoaded will fire when all the module resources have been injected and loaded
-                onModuleLoad:function(){
-                    console.log("First module injection complete");
-                    runFirst();
-                }
-            });
+            var btn = document.getElementById("btn-first");
+            btn.innerHTML = "Loading.."
+            var injectContextIsAvailable="is available"
+            try {
+                Mirin.inject("first_module", {
+                    // onModuleLoaded will fire when all the module resources have been injected and loaded
+                    onModuleLoad:function(){
+                        console.log("First module injection complete");
+                        runFirst();
+
+                        // context stays
+                        console.log("On callback, this is", this, btn,"and inject time context", injectContextIsAvailable);
+                        var btn = document.getElementById("btn-first");
+                        btn.innerHTML = "Done";
+                    }
+                });
+            } catch(ee) {
+                btn.innerHTML = "Error, " + ee.message;
+                throw(ee);
+            }
         }
 
         function injectSecond() {
-            Mirin.inject("second_module", {
-                
-                // onItemLoad will fire when ever one item has completed loading
+            var btn = document.getElementById("btn-second");
+            btn.innerHTML = "Loading.."
+            var injectContextIsAvailable="is available"
+            try {
+                Mirin.inject("second_module", {
+                    
+                    // onItemLoad will fire when ever one item has completed loading
 
-                onItemLoad:function(module){
-                },
+                    onItemLoad:function(module){
+                    },
 
-                // onModuleLoad will fire when all the module resources have been injected and loaded
-                
-                onModuleLoad:function(){
-                    console.log("Second module injection complete");
-                    runSecond();
-                }
-            });
+                    // onModuleLoad will fire when all the module resources have been injected and loaded
+                    
+                    onModuleLoad:function(){
+                        console.log("Second module injection complete");
+                        runSecond();
+
+                        // context stays
+                        console.log("On callback, this is",this, btn, "and inject time context", injectContextIsAvailable);
+                        var btn = document.getElementById("btn-second");
+                        btn.innerHTML = "Done";
+                    }
+                });
+            } catch(ee) {
+                btn.innerHTML = "Error, " + ee.message;
+                throw(ee);
+            }
         }
 
 
@@ -52,8 +79,8 @@
 <body>
     <div class="controls">
         <p>
-            <button onclick="injectFirst();">First module</button>
-            <button onclick="injectSecond();">Second module</button>
+            <button id="btn-first" onclick="injectFirst();">First module</button>
+            <button id="btn-second" onclick="injectSecond();">Second module</button>
         </p>
     </div>
 </body>

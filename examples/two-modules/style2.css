@@ -1,11 +1,20 @@
 #second {
     float:left;
-    width:50%;
+    width:45%;
     font-family:Helvetica;
+    margin: 0 2.5%;
 }
 h2.inc-second { 
     color:#008800; 
 }
 p.inc-second { 
     color:#008800; 
+}
+#second img {
+    width:100%;
+}
+#second .img-wrapper {
+    height: 9em;
+    border: 1px solid #008800;
+    overflow:hidden;
 }

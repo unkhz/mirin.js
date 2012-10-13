@@ -1,11 +1,21 @@
 #first {
     float:left; 
-    width:50%;
+    width:45%;
     font-family:Helvetica;
+    margin: 0 2.5%;
 }
 h2.inc-first { 
     color:#880000;
 }
 p.inc-first {
     color:#880000;
+}
+#first img {
+    width:100%;
+}
+
+#first .img-wrapper {
+    height:9em;
+    border: 1px solid #880000;
+    overflow:hidden;
 }
