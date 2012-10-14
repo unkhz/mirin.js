@@ -6,7 +6,7 @@ Mirin.js
 Why?
 ----
 
-Many HTML5 applications require precise control of static resource loading. Traditionally static resource links have been all included in the initial html payload, but this approach has numerous disadvantages. Mirin.js is a JavaScript tool for making controlled loading (injection) of static resources simple. It can independently load many types of resources with a single function call, at any point in time. ... And unload them all at once with another single function call.
+Many HTML5 applications require precise control of static resource loading. Traditionally static resource links have been all included in the initial html payload, but this approach has numerous disadvantages. Mirin.js is a JavaScript tool for making controlled loading (injection) of static resources simple. It can independently load many types of resources with a single function call, at any point in time. And unload them all at once with another single function call.
 
 What does it do?
 ----------------
@@ -31,7 +31,7 @@ Plugins
 Different resource types require different procedures to make them available for the application. Mirin exposes resource type handling as extensible plugins. Generic plugins are included in the mirin package, but new plugins can be created and existing plugins can also be extended to support project specific needs.
 
 | Plugin ID     | Purpose                                                                            |
------------------------------------------------------------------------------------------------------|
+|---------------|------------------------------------------------------------------------------------|
 | js            | Asynchronous injection of JavaScript script tags into document head                |
 | css           | Asynchronous injection of CSS link tags into document head                         |
 | img           | Preloading of images when content reflows need to be avoided                       |
