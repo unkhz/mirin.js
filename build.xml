@@ -4,7 +4,7 @@
   <property name="src.dir" location="src"/>
   <property name="dist.dir" location="dist"/>
   
-  <!-- plugins default to all. list can be overridden with a comma delimited list -->
+  <!-- included plugins default to all, but can be overridden with a comma delimited list -->
   <property name="plugins" value="*" />
 
   <!-- development version with logging capability -->
@@ -38,7 +38,6 @@
     </concat>
     <for list="${plugins}" delimiter="," param="plugin">
       <sequential>
-        <echo>Including plugin @{plugin}</echo>
         <concat destfile="${dist.filename.debug}" append="true" fixlastline="yes">
           <fileset dir="${src.dir}/plugins" includes="mirin.@{plugin}.js" />
         </concat>
