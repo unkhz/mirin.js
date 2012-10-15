@@ -59,7 +59,7 @@ After initialization, you are immediately ready to inject any of the modules spe
 
     Mirin.inject("bootstrap");
 
-This will begin the resource loading and injection process. You can add a callback function, which will be called when the module has been completely loaded and injected into DOM (though, in some cases injection is not needed).
+This will begin the resource loading and injection process. You can add a callback function, which will be called when the module has been completely loaded.
 
     Mirin.inject("bootstrap", {
         onModuleLoad: function(module) {
@@ -87,7 +87,7 @@ During application runtime, it is often necessary to load static resources that 
         "postdata/image2.jpg",
     }, {
         onModuleLoad: function(module) {
-            console.log("Postdata images ha been preloaded");
+            console.log("Postdata images have been preloaded");
             Application.showPost();
         },
         plugins:['img']
@@ -103,13 +103,13 @@ The use cases where custom modules are needed often relate to data instead of ap
 Building
 --------
 
-Mirin has a simple build system, with ANT and Java dependencies. Use your favorite search engine and make sure you have them properly installed with standard options. After that, you can build your own version of Mirin.
+Mirin uses ANT build system, which depends on Java. If you don't have them already, use your favorite search engine and install both with standard options for your environment. After that, you can build your own version of Mirin with the following commands.
 
     git clone https://github.com/unkhz/mirin.js
     cd mirin.js
     ant
 
-After build, minified and debug versions of the utility will be available in the dist folder. Debug version contains optional logging capability, which is completely removed from the minified version to save valuable kilobytes.
+After build, there will be minified and debug versions of the utility available in the dist folder. Debug version contains optional logging capability, which is completely removed from the minified version to save valuable kilobytes.
 
 By default, all stock plugins are included in the main mirin.js file. If you want to build a version containing only a specific set of plugins to suit your projects needs, you can define the set with the build time plugins property. Use a comma delimited list of plugin ids.
 
@@ -119,7 +119,7 @@ By default, all stock plugins are included in the main mirin.js file. If you wan
 Plugins
 -------
 
-Different resource types require different procedures, or gimmicks, to make them available for the application. Mirin exposes resource type handling (initialization, loading and injection) as extensible plugins. Generic plugins listed below are included in the default Mirin package. You're free to create new plugins or extend existing plugins to support your project specific needs.
+Different resource types require different procedures, or gimmicks, to make them asynchronously available for the application. Mirin exposes resource type handling (initialization, loading and injection) as extensible plugins. Generic plugins listed below are included in the default Mirin package. Feel free to create new plugins or extend existing plugins to support your project specific needs.
 
 | Plugin ID     | Purpose                                                                                      |
 |---------------|----------------------------------------------------------------------------------------------|
@@ -130,34 +130,40 @@ Different resource types require different procedures, or gimmicks, to make them
 | html-template | Loading and injection of HTML script templates into document head                            |
 | less          | Injection of LESS link tags into document head, to be handled by less.js on-the-fly compiler |
 
-Creating custom plugins is pretty simple. Basically, you just need to specify how you want to make your resource available for the application and how to destroy it. Mirin provides a set of basic functions for object handling and ajax. Generic plugins must avoid all library dependencies to be as generic as possible, but with project specific plugins you can of course do what's best for the project. 
+Creating custom plugins is pretty straightforward. Basically, you just need to specify how to make your resource available for the application and how to destroy it. Mirin provides a minimal set of functions for object handling and ajax. Generic plugins should avoid all external library dependencies to be as generic as possible, but with project specific plugins you can of course do what's best for the project. Below, a greeter plugin example.
 
     (function(Mirin){
-        window.myFiles = {};
+        window.greeters = {};
         Mirin.Item.extend({
             
             // unique id for the plugin, duplicates get overwritten
-            pluginId : "myfile",
+            pluginId : "greeter",
      
             // regular expression to determine if a resource belongs to this plugin
-            matchExp : /\.myfile$/i,
+            matchExp : /^.*hello[_-]?world.*$/i,
             
             // injection procedure
             inject: function() {
                 var item = this;
                 fetch(item.url, function(data) {
                     // success
-                    window.myFiles[item.url] = data;
-                    dispatch(ITEM_EVENTS.inject,item.options,item,item);
-                    dispatch(ITEM_EVENTS.load,item.options,item,item);
+                    window.greeters[item.url] = data;
+     
+                    // tell Mirin that this resource has been injected to DOM
+                    this.dispatchInjectEvent();
+     
+                    // tell Mirin that this resource has been loaded
+                    this.dispatchLoadEvent();
+     
                 }, function(){
                     // error
+                    throw(new Error("Invalid greeter"));
                 });
             },
       
             // removal procedure
             remove: function() {
-                delete window.myFiles[this.url];
+                delete window.greeters[this.url];
             }
         }
     })(Mirin));
