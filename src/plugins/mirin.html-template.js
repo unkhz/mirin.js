@@ -11,10 +11,10 @@
                     id:this.url.replace(/[_\/]/g, "-").replace(/\.h(tml|bs)$/i,'')
                 });
             document.head.appendChild(el);
-            dispatch(ITEM_EVENTS.inject,item.options,item,item);
+            this.dispatchInjectEvent();
             fetch(item.url, function(data) {
                 el.innerHTML = data;
-                dispatch(ITEM_EVENTS.load,item.options,item,item);
+                item.dispatchLoadEvent();
             });
         }
 

@@ -10,9 +10,9 @@
                     href:item.url
                 });
             document.head.appendChild(el);
-            dispatch(ITEM_EVENTS.inject,item.options,item,item);
+            this.dispatchInjectEvent();
             // FIXME: CSS files are faked to be loaded immediately, since we cant use onload method
-            dispatch(ITEM_EVENTS.load,item.options,item,item);
+            this.dispatchLoadEvent();
         }
         
         /*

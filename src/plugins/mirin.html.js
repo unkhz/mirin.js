@@ -17,8 +17,8 @@
                     document.body.appendChild(el);
                     item.elements.push(el);
                 }
-                dispatch(ITEM_EVENTS.inject,item.options,item,item);
-                dispatch(ITEM_EVENTS.load,item.options,item,item);
+                item.dispatchInjectEvent();
+                item.dispatchLoadEvent();
             });
         },
 
