@@ -30,8 +30,8 @@
             }
 
             document.head.appendChild(el);
-            dispatch(ITEM_EVENTS.inject,item.options,item,item);
-            dispatch(ITEM_EVENTS.load,item.options,item,item);
+            this.dispatchInjectEvent();
+            this.dispatchLoadEvent();
         }
 
         /*

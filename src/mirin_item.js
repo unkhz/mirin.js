@@ -4,10 +4,10 @@
 
     var noop = function(){},
         defaultOptions = {
-        onInit:noop,
-        onInject:noop,
-        onLoad:noop
-    };
+            onInit:noop,
+            onInject:noop,
+            onLoad:noop
+        };
 
     // MirinItem constructor
     // may be extended
@@ -102,8 +102,15 @@
         onSetLoad:noop,
 
         // called when the whole module has been loaded
-        onModuleLoad:noop
+        onModuleLoad:noop,
 
+        dispatchInjectEvent:function(){
+            dispatch(ITEM_EVENTS.inject, item.options, item, item);
+        },
+
+        dispatchLoadEvent:function(){
+            dispatch(ITEM_EVENTS.load, item.options, item, item);
+        }
     });
 
 }());

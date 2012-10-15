@@ -11,13 +11,13 @@
                 elProperties = {
                     src:item.url,
                     onload:function(){
-                        dispatch(ITEM_EVENTS.load,item.options,item,item);
+                        item.dispatchLoadEvent();
                     }
                 };
             extend(el, elProperties);
             el.style.visibility = "hidden";
             //document.head.appendChild(el);
-            dispatch(ITEM_EVENTS.inject,this.options,this,this);
+            this.dispatchInjectEvent();
         }
 
         /*
