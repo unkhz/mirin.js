@@ -121,6 +121,8 @@ Plugins
 
 Different resource types require different procedures, or gimmicks, to make them asynchronously available for the application. Mirin exposes resource type handling (initialization, loading and injection) as extensible plugins. Generic plugins listed below are included in the default Mirin package. Feel free to create new plugins or extend existing plugins to support your project specific needs.
 
+**Mirin stock plugins**
+
 | Plugin ID     | Purpose                                                                                      |
 |---------------|----------------------------------------------------------------------------------------------|
 | js            | Asynchronous injection of JavaScript script tags into document head                          |
@@ -155,7 +157,7 @@ Creating custom plugins is pretty straightforward. Basically, you just need to s
                     // tell Mirin that this resource has been loaded
                     this.dispatchLoadEvent();
      
-                }, function(){
+                }, function() {
                     // error
                     throw(new Error("Invalid greeter"));
                 });
@@ -165,5 +167,5 @@ Creating custom plugins is pretty straightforward. Basically, you just need to s
             remove: function() {
                 delete window.greeters[this.url];
             }
-        }
-    })(Mirin));
+        });
+    }(Mirin));
