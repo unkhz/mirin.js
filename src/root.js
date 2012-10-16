@@ -42,7 +42,7 @@ var root=this,
         while (
             div.innerHTML = '<!--[if gt IE '+(++v)+']><i></i><![endif]-->',
             div.getElementsByTagName('i')[0]
-        );
+        ){};
         return v > 4 ? v : undef;
     }());
 
@@ -110,8 +110,6 @@ function fetch(url, success, error) {
             } else {
                 if ( error ) {
                     error.call(this, response);
-                } else{
-                    throw(new Error("Ajax returned " + status + " fetching " + url));
                 }
             }
         }

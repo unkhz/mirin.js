@@ -57,6 +57,14 @@
         },
         "modules":modules,
         "resources":resources,
-        "plugins":plugins
+        "plugins":plugins,
+
+        // Classes
+        "Utils": {
+            ie:ie,
+            extend:extend,
+            fetch:fetch
+        },
+        "Item":MirinItem
     };
 }());
