@@ -14,10 +14,8 @@
                 for ( i = 0; i < wrap.children.length; i++ ) {
                     var el = wrap.children[i];
                     // append elements one by one to avoid full page repaint
-                    document.body.appendChild(el);
                     item.elements.push(el);
                 }
-                item.dispatchInjectEvent();
                 item.dispatchLoadEvent();
             });
         },
@@ -28,6 +26,16 @@
                 el.parentNode.removeChild(el);
                 delete this.elements[i];
             }
+        },
+
+        onModuleLoad: function() {
+            // inject html includes last, so that css is loaded
+            // and flash of ugliness is avoided
+            var i, els = this.elements;
+            for ( i in els ) {
+                document.body.appendChild(els[i]);
+            }
+            this.dispatchInjectEvent();
         }
 
         /*
@@ -36,9 +44,6 @@
 
         },
 
-        onModuleLoad: function() {
-
-        }
 
         */
     });
