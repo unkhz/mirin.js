@@ -1,28 +1,29 @@
-/* CSS injection with ff-, opera-, chrome- and ie-compatible method 
- * to determine when loading is finished. This method was described in
- * http://www.phpied.com/when-is-a-stylesheet-really-loaded/
+/* CSS injection without waiting for load
  */
 (function(){
     MirinItem.extend({
         pluginId : "css",
         matchExp : /\.css$/i,
         inject: function() {
-            var dummy,
-                item = this,
-                el = this.el = extend(createElement("style"), {
-                    textContent:'@import "' + item.url + '"'
-                }),
-                loadCheckIntervalId = setInterval(function() {
-                  try {
-                    // error is thrown if resource is not loaded
-                    dummy = el.sheet.cssRules;
-                    item.dispatchLoadEvent();
-                    clearInterval(loadCheckIntervalId);
-                  } catch (ee){}
-                }, 10);
-
+            var item = this,
+                el = this.el = extend(createElement("link"), {
+                    rel:"stylesheet",
+                    href:item.url
+                });
             document.head.appendChild(el);
             this.dispatchInjectEvent();
+
+            // load event is dispatched immediately, since there is no
+            // reliable cross-browser method for listening to the load event.
+            // The user agent specific tests and use of cache described in
+            // http://www.phpied.com/when-is-a-stylesheet-really-loaded/ are
+            // not generic enough for a utility project like Mirin
+
+            // I suggest implementing a project specific plugin, which checks
+            // for specific element styles, if the correct sending of the load
+            // event is a deal breaker.
+            
+            this.dispatchLoadEvent();
         }
         
         /*

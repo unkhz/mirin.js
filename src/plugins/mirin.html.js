@@ -11,9 +11,9 @@
             fetch(item.url, function(data) {
                 var i, wrap = document.createElement("div");
                 wrap.innerHTML += data;
+                // append elements one by one to avoid full page repaint
                 for ( i = 0; i < wrap.children.length; i++ ) {
                     var el = wrap.children[i];
-                    // append elements one by one to avoid full page repaint
                     item.elements.push(el);
                 }
                 item.dispatchLoadEvent();
@@ -29,8 +29,8 @@
         },
 
         onModuleLoad: function() {
-            // inject html includes last, so that css is loaded
-            // and flash of ugliness is avoided
+            // inject html includes last, so that possible time without css
+            // styles (flash of ugliness) is minimized
             var i, els = this.elements;
             for ( i in els ) {
                 document.body.appendChild(els[i]);
