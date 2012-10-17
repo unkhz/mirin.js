@@ -12,6 +12,11 @@
                     src:item.url,
                     onload:function(){
                         item.dispatchLoadEvent();
+                    },
+                    onerror:function(){
+                        // don't get stuck if 404 is returned,
+                        // it might be part of caching strategy
+                        item.dispatchLoadEvent();
                     }
                 };
             extend(el, elProperties);

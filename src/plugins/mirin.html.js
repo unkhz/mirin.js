@@ -17,6 +17,10 @@
                     item.elements.push(el);
                 }
                 item.dispatchLoadEvent();
+            }, function(){
+                // don't get stuck if 404 is returned,
+                // it might be part of caching strategy
+                item.dispatchLoadEvent();
             });
         },
 

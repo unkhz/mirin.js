@@ -19,7 +19,12 @@
                 el = this.el = createElement("script"),
                 elProperties = {
                     type:"text/javascript",
-                    src:item.url
+                    src:item.url,
+                    onerror:function(){
+                        // don't get stuck if 404 is returned,
+                        // it might be part of caching strategy
+                        item.dispatchLoadEvent();
+                    }
                 };
             if ( ie ) {
                 // on IE, fetching starts when src property is set, so injection can be delayed
@@ -35,7 +40,7 @@
                 extend(el, elProperties);
             } else {
                 // Others need the element to be appended to start fetch
-                elProperties.onload=function(){
+                elProperties.onload = function(){
                     item.dispatchLoadEvent();
                 };
                 elProperties.async=rootOptions.async;
