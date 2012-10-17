@@ -11,7 +11,7 @@ var root=this,
     // Collections
     resources = null,
     modules = {},
-    plugins = [],
+    plugins = {},
 
     // top level options object, with defaults
     rootOptions = {
@@ -46,8 +46,20 @@ var root=this,
         return v > 4 ? v : undef;
     }());
 
-// Log function will be available only in debug version
-//BEGIN_DEBUG
+// fix IE8 Array.protytype.indexOf
+if ( !Array.prototype.indexOf ) {
+    Array.prototype.indexOf = function(obj, start) {
+        for (var i = (start || 0), j = this.length; i < j; i++) {
+            if (this[i] === obj) { return i; }
+        }
+        return -1;
+    };
+}
+
+// fix IE8 document.head
+if ( !document.head ) document.head = document.getElementsByTagName("head")[0];
+
+// Log function
 function log() {
     var c = window.console;
     if (rootOptions.debug && c && c.log) {
@@ -56,20 +68,20 @@ function log() {
         } else {
             // IE
             var str="";
-            for ( var i in arguments ) str += arguments[i] + " ";
+            for ( var i = 0; i < arguments.length; i++ ) str += arguments[i] + " ";
             c.log(str);
         }
     }
 }
-//END_DEBUG
 
 function extend() {
     var dest = arguments[0],
-        rest = arraySlice.call(arguments,1);
-    for ( var i in rest ) {
+        rest = arraySlice.call(arguments,1),
+        i,j;
+    for ( i in rest ) {
         var src = rest[i];
         if ( src ) {
-            for ( var j in src ) {
+            for ( j in src ) {
                 dest[j] = src[j];
             }
         }
@@ -91,15 +103,16 @@ function dispatch(eventName, listenerObject, contextObject){
 
 // fetch with ajax
 function fetch(url, success, error) {
-    var xhr = new XMLHttpRequest(),
+    var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP"),
         finished=false;
+
     xhr.open("GET", url, true);
     xhr.onload = xhr.onreadystatechange = function(e){
         var response, status;
         try {
             // need to catch error, when xhr is aborted on IE
-            response=e.target.responseText;
-            status=e.target.status;
+            response=xhr.responseText;
+            status=xhr.status;
         } catch(ee) {
         }
 
@@ -112,6 +125,8 @@ function fetch(url, success, error) {
                     error.call(this, response);
                 }
             }
+            xhr.onreadystatechange=null;
+            xhr.onload=null;
         }
     };
     xhr.send(null);

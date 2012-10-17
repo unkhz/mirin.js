@@ -55,6 +55,12 @@
         "remove":function(moduleId) {
             return modules[moduleId].remove();
         },
+
+        "registerPlugin":function(plugin) {
+            if ( plugin && plugin.pluginId ) this.plugins[plugin.pluginId] = plugin;
+        },
+
+        // Collections
         "modules":modules,
         "resources":resources,
         "plugins":plugins,
@@ -63,7 +69,8 @@
         "Utils": {
             ie:ie,
             extend:extend,
-            fetch:fetch
+            fetch:fetch,
+            log:log
         },
         "Item":MirinItem
     };

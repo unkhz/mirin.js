@@ -78,7 +78,7 @@
             child.extend = this.extend;
 
             // Automatically register plugin for use
-            plugins[child.pluginId] = child;
+            Mirin.registerPlugin(child);
 
             return child;
         }
@@ -112,6 +112,7 @@
             dispatch(ITEM_EVENTS.load, this.options, this, this);
         }
     });
+    Mirin.Item = MirinItem;
 
 }());
 

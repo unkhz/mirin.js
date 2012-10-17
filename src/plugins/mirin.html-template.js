@@ -10,10 +10,10 @@
                     // hsb/dashboard_page.html -> #hsb-dashboard-page
                     id:this.url.replace(/[_\/]/g, "-").replace(/\.h(tml|bs)$/i,'')
                 });
-            document.head.appendChild(el);
-            this.dispatchInjectEvent();
             fetch(item.url, function(data) {
-                el.innerHTML = data;
+                el.textContent = data;
+                document.head.appendChild(el);
+                item.dispatchInjectEvent();
                 item.dispatchLoadEvent();
             });
         }

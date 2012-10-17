@@ -25,7 +25,8 @@
         },
 
         remove: function() {
-            for ( var i in this.elements ) {
+            var i, len;
+            for ( i=0,len=this.elements.length; i<len; i++ ) {
                 var el = this.elements[i];
                 el.parentNode.removeChild(el);
                 delete this.elements[i];
@@ -35,8 +36,8 @@
         onModuleLoad: function() {
             // inject html includes last, so that possible time without css
             // styles (flash of ugliness) is minimized
-            var i, els = this.elements;
-            for ( i in els ) {
+            var i, len, els = this.elements;
+            for ( i=0,len=els.length; i<len; i++ ) {
                 document.body.appendChild(els[i]);
             }
             this.dispatchInjectEvent();

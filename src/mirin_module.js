@@ -32,8 +32,8 @@
     };
 
     proto.moduleIsLoaded = function() {
-        var i, type;
-        for ( i in this.types ) {
+        var i, len, type;
+        for ( i=0,len=this.types.length; i<len; i++ ) {
             type = this.types[i];
             if ( this.getEventCount(type,ITEM_EVENTS.init) !== this.getEventCount(type,ITEM_EVENTS.load) ) {
                 return false;
@@ -74,14 +74,14 @@
     };
 
     proto.inject = function() {
-        log("Mirin","injecting module",this.id,this.resources);
-        var i,
+        log("Mirin","injecting module",this.id);
+        var i, len,
             module = this,
             set = this.resources,
             injectQueue = [];
 
         // init phase
-        for ( i in set ) {
+        for ( i=0,len=set.length; i<len; i++ ) {
             var item = this.createItem(set[i], {
                 onInit:onItemInit,
                 onInject:onItemInject,
@@ -98,7 +98,7 @@
         }
 
         // inject phase
-        for ( i in injectQueue ) {
+        for ( i=0,len=injectQueue.length; i<len; i++ ) {
             injectQueue[i].inject();
         }
 
@@ -107,7 +107,8 @@
     };
 
     proto.remove = function() {
-        for ( var i in this.items ) {
+        var i,len;
+        for ( i=0,len=this.items.length; i<len; i++ ) {
             log("Mirin", "removing", this.id, this.items[i].pluginId, this.items[i].url);
             this.items[i].remove();
             delete this.items[i];
@@ -129,7 +130,7 @@
     }
 
     function onItemLoad(item) {
-        var i,
+        var i,len,
             module = item.module,
             type = item.pluginId;
         log("Mirin", "loaded", module.id, item.pluginId, item.url);
@@ -140,7 +141,7 @@
         // inform items that the whole set has been loaded
         if ( module.setIsLoaded(type) ) {
             log("Mirin completed loading of", item.pluginId, "set in module", module.id);
-            for ( i in module.items ) {
+            for ( i=0,len=module.items.length; i<len; i++ ) {
                 var jtem = module.items[i];
                 if ( jtem.pluginId == type ) {
                     jtem.onSetLoad(module);
@@ -152,7 +153,7 @@
         // inform items that the whole module has been loaded
         if ( module.moduleIsLoaded() ) {
             log("Mirin completed loading of module", module.id, "in", new Date().getTime() - module.creationTime, "ms");
-            for ( i in module.items ) {
+            for ( i=0,len=module.items.length; i<len; i++ ) {
                 module.items[i].onModuleLoad(module);
             }
             dispatch(EVENTS.moduleLoad, module.options, null, module);

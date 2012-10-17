@@ -57,6 +57,15 @@
                 document.head.appendChild(this.el);
                 this.dispatchInjectEvent();
             }
+        },
+
+        matchItem: function(jsonItem) {
+            // check ie version if is ie
+            if ( jsonItem.ie && jsonItem.ie.match(/^[<>!=0-9\s]+$/) && ie && !eval("ie" + jsonItem.ie) ) {
+                return false;
+            }
+            // check default matchItem
+            return MirinItem.matchItem.call(this,jsonItem);
         }
 
         /*
