@@ -1,4 +1,6 @@
 /* CSS injection without waiting for load
+ * Respond.js supported for ie8 media queries
+ * see: https://github.com/scottjehl/Respond
  */
 (function(){
     MirinItem.extend({
@@ -11,6 +13,11 @@
                     href:item.url
                 });
             document.head.appendChild(el);
+
+            // allow Respond.js to do it's work as soon as possible
+            if ( window.respond && respond.update ) respond.update();
+
+
             this.dispatchInjectEvent();
 
             // load event is dispatched immediately, since there is no
