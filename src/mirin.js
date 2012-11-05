@@ -48,6 +48,7 @@
                 if ( modules[moduleId] ) {
                     throw(new Error("Module already injected"));
                 }
+                log(moduleId);
                 modules[moduleId] = new MirinModule(moduleId, aOptions);
                 injectAll();
             }

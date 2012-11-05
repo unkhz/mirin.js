@@ -23,7 +23,7 @@
                     keyPrefix = loc.href.replace(/(\?.*)?(#.*)?$/, '') + item.url;
 
                 for (var key in window.localStorage) {
-                    if (key.indexOf(keyPrefix) === 0) {
+                    if (arrayIndexOf.call(key,keyPrefix) === 0) {
                       delete window.localStorage[key];
                     }
                 }

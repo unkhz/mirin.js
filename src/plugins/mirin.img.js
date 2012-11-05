@@ -4,12 +4,11 @@
 (function(){
     MirinItem.extend({
         pluginId : "img",
-        matchExp : /\.(jpg|png|gif|svg)$/i,
+        matchExp : /\.(jpg|jpeg|png|gif|svg)$/i,
         inject: function() {
             var item = this,
                 el = this.el = createElement("img"),
                 elProperties = {
-                    src:item.url,
                     onload:function(){
                         item.dispatchLoadEvent();
                     },
@@ -17,7 +16,8 @@
                         // don't get stuck if 404 is returned,
                         // it might be part of caching strategy
                         item.dispatchLoadEvent();
-                    }
+                    },
+                    src:item.url
                 };
             extend(el, elProperties);
             el.style.visibility = "hidden";

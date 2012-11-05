@@ -67,7 +67,7 @@
         var i,plugin;
         for ( i in plugins ) {
             plugin = plugins[i];
-            if ( plugin.matchItem(resourceItem) && this.options.plugins.indexOf(plugin.pluginId) >= 0 ) {
+            if ( plugin.matchItem(resourceItem) && arrayIndexOf.call(this.options.plugins, plugin.pluginId) >= 0 ) {
                 return new plugin(this, resourceItem, aOptions);
             }
         }
@@ -90,20 +90,29 @@
             if ( item ) {
                 // only initialize items that have an assigned resourcePlugin
                 this.items.push(item);
-                if ( this.types.indexOf(item.pluginId) === -1 ) this.types.push(item.pluginId);
+                if ( arrayIndexOf.call(this.types, item.pluginId) === -1 ) this.types.push(item.pluginId);
                 injectQueue.push(item);
             } else {
                 log("Mirin", "skipped item, no applicable resourcePlugin", set[i]);
             }
         }
+        
+        this.isInitialized=true;
 
         // inject phase
         for ( i=0,len=injectQueue.length; i<len; i++ ) {
             injectQueue[i].inject();
         }
 
+        // check if module has already been loaded
+        if ( this.moduleIsLoaded() ) {
+            log("Mirin completed loading of module", this.id, "in", new Date().getTime() - this.creationTime, "ms");
+            for ( i=0,len=this.items.length; i<len; i++ ) {
+                this.items[i].onModuleLoad(this);
+            }
+            dispatch(EVENTS.moduleLoad, this.options, null, this);
+        }
 
-        this.isInitialized=true;
     };
 
     proto.remove = function() {
@@ -158,5 +167,9 @@
             }
             dispatch(EVENTS.moduleLoad, module.options, null, module);
         }
+    }
+
+    function dispatchEvents() {
+
     }
 }());

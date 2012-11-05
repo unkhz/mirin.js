@@ -32,6 +32,13 @@ var root=this,
 
     // minification optimizations
     arraySlice = Array.prototype.slice,
+    // fix IE8 Array.protytype.indexOf
+    arrayIndexOf = Array.prototype.indexOf || function(obj, start) {
+        for (var i = (start || 0), j = this.length; i < j; i++) {
+            if (this[i] === obj) { return i; }
+        }
+        return -1;
+    },
     createElement = function(el){
         return document.createElement(el);
     },
@@ -45,16 +52,6 @@ var root=this,
         ){};
         return v > 4 ? v : undef;
     }());
-
-// fix IE8 Array.protytype.indexOf
-if ( !Array.prototype.indexOf ) {
-    Array.prototype.indexOf = function(obj, start) {
-        for (var i = (start || 0), j = this.length; i < j; i++) {
-            if (this[i] === obj) { return i; }
-        }
-        return -1;
-    };
-}
 
 // fix IE8 document.head
 if ( !document.head ) document.head = document.getElementsByTagName("head")[0];
@@ -78,7 +75,7 @@ function extend() {
     var dest = arguments[0],
         rest = arraySlice.call(arguments,1),
         i,j;
-    for ( i in rest ) {
+    for ( i=0,len=rest.length;i<len;i++ ) {
         var src = rest[i];
         if ( src ) {
             for ( j in src ) {
@@ -115,7 +112,7 @@ function fetch(url, success, error) {
             status=xhr.status;
         } catch(ee) {
         }
-
+ 
         if ( response && !finished ) {
             finished = true;
             if ( status === 200 ) {
@@ -125,8 +122,12 @@ function fetch(url, success, error) {
                     error.call(this, response);
                 }
             }
-            xhr.onreadystatechange=null;
-            xhr.onload=null;
+            try {
+                xhr.onreadystatechange=null;
+                xhr.onload=null;
+            } catch (ee) {
+
+            }
         }
     };
     xhr.send(null);
