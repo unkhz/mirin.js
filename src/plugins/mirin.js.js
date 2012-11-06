@@ -1,15 +1,33 @@
-/* js-inject, with async load and sync parsing 
- * FIXME: Android fails in sync parsing
+/* js-inject, with async load and sync parsing
  */
 (function(){
     
-    function AppendQueueItem(el,options){
-        extend(this, {
-            el:el,
-            options:options
-        });
+    // Determine if browser can handle synchronous loading of injected scripts
+    // FIXME: more tests should be in this list, currently detects only old Androids
+    noSyncParse = (function(){
+        return navigator.userAgent.match(/Android [12]\./);
+    }());
+
+    // The fallback injection method for browsers that do not support
+    // synchronous loading of injected scripts is to keep a static queue of
+    // items, and inject them one by one in the correct order
+    var injectQueue = [];
+    function injectRecursiveFromQueue() {
+        if ( injectQueue.length === 0 || injectQueue[0].isLoading ) return;
+
+        var item = injectQueue[0];
+        
+        item.el.onload = function() {
+            item.isLoading = false;
+            item.dispatchLoadEvent();
+            injectQueue.shift();
+            injectRecursiveFromQueue();
+        };
+        
+        item.isLoading = true;
+        document.head.appendChild(item.el);
+        item.dispatchInjectEvent();
     }
-    var appendQueue = {};
 
     MirinItem.extend({
         pluginId : "js",
@@ -26,6 +44,7 @@
                         item.dispatchLoadEvent();
                     }
                 };
+
             if ( ie ) {
                 // on IE, fetching starts when src property is set, so injection can be delayed
                 // see: http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
@@ -43,10 +62,17 @@
                 elProperties.onload = function(){
                     item.dispatchLoadEvent();
                 };
-                elProperties.async=rootOptions.async;
+                if ( rootOptions.async ) elProperties.async = true;
                 extend(el, elProperties);
-                document.head.appendChild(el);
-                item.dispatchInjectEvent();
+                if ( noSyncParse ) {
+                    // fallback synchronous injection method
+                    injectQueue.push(this);
+                    injectRecursiveFromQueue();
+                } else {
+                    // browser synchronous injection method
+                    document.head.appendChild(el);
+                    item.dispatchInjectEvent();
+                }
             }
         },
 
@@ -60,12 +86,15 @@
         },
 
         matchItem: function(jsonItem) {
-            // check ie version if is ie
-            if ( jsonItem.ie && jsonItem.ie.match(/^[<>!=0-9\s]+$/) && ie && !eval("ie" + jsonItem.ie) ) {
-                return false;
-            }
             // check default matchItem
-            return MirinItem.matchItem.call(this,jsonItem);
+            if ( MirinItem.matchItem.call(this,jsonItem) ) {
+                // check ie version if is ie
+                if ( jsonItem.ie && jsonItem.ie.match(/^[<>!=\s]+[0-9\s]+$/) && !eval("ie" + jsonItem.ie) ) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
         }
 
         /*
