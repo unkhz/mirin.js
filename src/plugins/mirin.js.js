@@ -23,7 +23,7 @@
             injectQueue.shift();
             injectRecursiveFromQueue();
         };
-        
+
         item.isLoading = true;
         document.head.appendChild(item.el);
         item.dispatchInjectEvent();
@@ -62,7 +62,7 @@
                 elProperties.onload = function(){
                     item.dispatchLoadEvent();
                 };
-                if ( rootOptions.async ) elProperties.async = true;
+                elProperties.async = rootOptions.async ? true : false;
                 extend(el, elProperties);
                 if ( noSyncParse ) {
                     // fallback synchronous injection method
