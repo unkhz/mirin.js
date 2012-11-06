@@ -9,12 +9,27 @@
             // html-include does not create an element, instead it injects a string
             // which may contain any number of elements or text nodes
             fetch(item.url, function(data) {
-                var i, wrap = document.createElement("div");
+                var i, len, el, wrap = document.createElement("div");
                 wrap.innerHTML += data;
                 // append elements one by one to avoid full page repaint
                 for ( i = 0; i < wrap.children.length; i++ ) {
-                    var el = wrap.children[i];
+                    el = wrap.children[i];
+                    if ( el.nodeName == "SCRIPT" && ie < 9 ) continue;
                     item.elements.push(el);
+                }
+                if ( ie < 9 ) {
+                    // in IE, script tags need to be re-created D:<
+                    var match, re = /(<script\b[^>]*>)([\s\S]*?)(<\/script>)/gm;
+                    while ( match = re.exec(data) ) {
+                        var content = match[2],
+                            openTag = match[1];
+                            endTag = match[2];
+
+                        item.elements.push(extend(document.createElement(openTag+endTag), {
+                            type:"text/html",
+                            text:content
+                        }));
+                    }
                 }
                 item.dispatchLoadEvent();
             }, function(){
@@ -38,7 +53,8 @@
             // styles (flash of ugliness) is minimized
             var i, len, els = this.elements;
             for ( i=0,len=els.length; i<len; i++ ) {
-                document.body.appendChild(els[i]);
+                var el = els[i];
+                document.body.appendChild(el);
             }
             this.dispatchInjectEvent();
         }
