@@ -21,9 +21,9 @@
                     // in IE, script tags need to be re-created D:<
                     var match, re = /(<script\b[^>]*>)([\s\S]*?)(<\/script>)/gm;
                     while ( match = re.exec(data) ) {
-                        var content = match[2],
-                            openTag = match[1];
-                            endTag = match[2];
+                        var openTag = match[1],
+                            content = match[2],
+                            endTag = match[3];
 
                         item.elements.push(extend(document.createElement(openTag+endTag), {
                             type:"text/html",
