@@ -32,6 +32,7 @@ var root=this,
 
     // minification optimizations
     arraySlice = Array.prototype.slice,
+
     // fix IE8 Array.protytype.indexOf
     arrayIndexOf = Array.prototype.indexOf || function(obj, start) {
         for (var i = (start || 0), j = this.length; i < j; i++) {
@@ -39,6 +40,7 @@ var root=this,
         }
         return -1;
     },
+
     createElement = function(el){
         return document.createElement(el);
     },
@@ -51,12 +53,22 @@ var root=this,
             div.getElementsByTagName('i')[0]
         ){};
         return v > 4 ? v : undef;
-    }());
+    }()),
+
+    ieInjectScriptTemplate = function(parent, openingTag, data){
+        var sScript=openingTag;
+        sScript = sScript + data;
+        sScript = sScript + "</script" + ">";
+        parent.innerHTML += sScript;
+    };
 
 // fix IE8 document.head
-if ( !document.head ) document.head = document.getElementsByTagName("head")[0];
+if ( !document.head ) {
+    document.head = document.getElementsByTagName("head")[0];
+}
 
 // Log function
+//BEGIN_DEBUG
 function log() {
     var c = window.console;
     if (rootOptions.debug && c && c.log) {
@@ -65,11 +77,14 @@ function log() {
         } else {
             // IE
             var str="";
-            for ( var i = 0; i < arguments.length; i++ ) str += arguments[i] + " ";
+            for ( var i = 0; i < arguments.length; i++ ) {
+                str += arguments[i] + " ";
+            }
             c.log(str);
         }
     }
 }
+//END_DEBUG
 
 function extend() {
     var dest = arguments[0],
