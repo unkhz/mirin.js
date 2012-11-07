@@ -125,10 +125,11 @@ function fetch(url, success, error) {
             // need to catch error, when xhr is aborted on IE
             response=xhr.responseText;
             status=xhr.status;
+            readyState = xhr.readyState;
         } catch(ee) {
         }
  
-        if ( response && !finished ) {
+        if ( response && !finished && readyState === 4) {
             finished = true;
             if ( status === 200 ) {
                 if ( success ) success.call(this, response);
