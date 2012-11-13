@@ -55,6 +55,8 @@ var root=this,
         return v > 4 ? v : undef;
     }()),
 
+    ua = navigator.userAgent,
+
     ieInjectScriptTemplate = function(parent, openingTag, data){
         var sScript=openingTag;
         sScript = sScript + data;
@@ -72,10 +74,10 @@ if ( !document.head ) {
 function log() {
     var c = window.console;
     if (rootOptions.debug && c && c.log) {
-        if ( c.log.apply ) {
+        if ( c.log.apply && !ua.match(/(iphone|android)/i)) {
             c.log.apply(c,arguments);
         } else {
-            // IE
+            // IE, iPhone, Android
             var str="";
             for ( var i = 0; i < arguments.length; i++ ) {
                 str += arguments[i] + " ";

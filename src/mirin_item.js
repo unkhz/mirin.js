@@ -20,6 +20,8 @@
         dispatch(ITEM_EVENTS.init,this.options,this,this);
     };
 
+    // Shared empty constructor function to aid in prototype-chain creation.
+    var baseConstructor = function(){};
 
     /* MirinItem static properties and methods */
     extend(MirinItem, {
@@ -54,10 +56,10 @@
 
         },
 
-        // static extend function, inspired by Backbone.js inheritance
+        // static extend function, mostly copied from Backbone.js inheritance
         // this cannot be overridden
         extend:function(prototype, staticProperties) {
-            var parent=this,
+            var parent=stat,
                 child;
 
             if (prototype && prototype.hasOwnProperty('constructor')) {
@@ -69,13 +71,21 @@
             // take out known static properties from prototype properties
             staticProperties = staticProperties || {};
             for ( var i in this ) {
-                if ( prototype.hasOwnProperty(i) ) staticProperties[i] = prototype[i];
+                if ( i !== "prototype" && prototype.hasOwnProperty(i) ) {
+                    staticProperties[i] = prototype[i];
+                }
             }
 
-            extend(child, parent, staticProperties);
-            extend(child.prototype, parent.prototype, prototype);
+            // Following procedure, copied from Backbone, ensures that the
+            // class receives an unique prototype in all browsers
 
+            extend(child, parent);
+            baseConstructor.prototype = parent.prototype;
+            child.prototype = new baseConstructor();
+            extend(child, staticProperties);
+            extend(child.prototype, prototype);
             child.extend = this.extend;
+            child.prototype.constructor = child;
 
             // Automatically register plugin for use
             Mirin.registerPlugin(child);

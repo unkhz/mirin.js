@@ -5,7 +5,7 @@
     // Determine if browser can handle synchronous loading of injected scripts
     // FIXME: more tests should be in this list, currently detects only old Androids
     noSyncParse = (function(){
-        return navigator.userAgent.match(/Android [12]\./);
+        return ua.match(/Android [12]\./);
     }());
 
     // The fallback injection method for browsers that do not support
