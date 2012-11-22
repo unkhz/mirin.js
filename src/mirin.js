@@ -50,7 +50,9 @@
                 }
                 modules[moduleId] = new MirinModule(moduleId, aOptions);
                 injectAll();
+
             }
+            return moduleId;
         },
         "remove":function(moduleId) {
             return modules[moduleId].remove();
