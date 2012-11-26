@@ -16,10 +16,20 @@ What does it do?
 - Simplifies minification of resource modules for production environment by enfrocing the use of a single JSON resource collection
 - Enables handling of project specific resource types via a simple plugin architecture
 
+
+What does it NOT do?
+--------------------
+
+- Optimize for loading speed in development environment. Production environment is the target.
+- Concentrate on optimizing JavaScript loading in parallel. Instead of parallel loading, production code should be concatenated into one file per module.
+- Concentrate on definition of JavaScript dependecies. Production code is assumed to be concatenated and minified into a handful of modules. Keeping track of dependencies programmatically is thus deemed overkill.
+
+
 Download
 --------
 
-TBD
+https://github.com/unkhz/mirin.js/downloads
+
 
 Usage
 -----
@@ -100,22 +110,6 @@ The use cases where custom modules are needed often relate to data instead of ap
     Mirin.remove("application");
 
 
-Building
---------
-
-Mirin uses ANT build system, which depends on Java. If you don't have them already, use your favorite search engine and install both with standard options for your environment. After that, you can build your own version of Mirin with the following commands.
-
-    git clone https://github.com/unkhz/mirin.js
-    cd mirin.js
-    ant
-
-After build, there will be minified and debug versions of the utility available in the dist folder. Debug version contains optional logging capability, which is completely removed from the minified version to save valuable kilobytes.
-
-By default, all stock plugins are included in the main mirin.js file. If you want to build a version containing only a specific set of plugins to suit your projects needs, you can define the set with the build time plugins property. Use a comma delimited list of plugin ids.
-
-    ant -Dplugins=js,css,html-template
-
-
 Plugins
 -------
 
@@ -169,3 +163,19 @@ Creating custom plugins is pretty straightforward. Basically, you just need to s
             }
         });
     }(Mirin));
+
+
+Building
+--------
+
+Mirin uses ANT build system, which depends on Java. If you don't have them already, use your favorite search engine and install both with standard options for your environment. After that, you can build your own version of Mirin with the following commands.
+
+    git clone https://github.com/unkhz/mirin.js
+    cd mirin.js
+    ant
+
+After build, there will be minified and debug versions of the utility available in the dist folder. Debug version contains optional logging capability, which is completely removed from the minified version to save valuable kilobytes.
+
+By default, all stock plugins are included in the main mirin.js file. If you want to build a version containing only a specific set of plugins to suit your projects needs, you can define the set with the build time plugins property. Use a comma delimited list of plugin ids.
+
+    ant -Dplugins=js,css,html-template

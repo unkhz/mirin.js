@@ -1,4 +1,4 @@
-<project name="Mirin.js" default="compile" basedir=".">
+<project name="Mirin.js" default="release" basedir=".">
     <description>Mirin.js concatenation and minification</description>
   <!-- set global properties for this build -->
   <property name="src.dir" location="src"/>
@@ -55,7 +55,7 @@
     <replace file="${dist.filename.cat}" token="log(" value="//log(" />
   </target>
 
-  <target name="compile" depends="init,concat,remove.debug" description="compile the source ">
+  <target name="compile" depends="init,concat,remove.debug" description="compile the source">
     <java jar="tools/compiler.jar" fork="true">
       <arg value="--js"/>
       <arg value="${dist.filename.cat}"/>
@@ -65,6 +65,13 @@
       <arg value="SIMPLE_OPTIMIZATIONS"/>
     </java>
   </target>
+
+  <target name="gzip" depends="compile">
+    <gzip src="${dist.filename.debug}" destfile="${dist.filename.debug}.gz" />
+    <gzip src="${dist.filename.min}" destfile="${dist.filename.min}.gz" />
+  </target>
+
+  <target name="release" depends="compile,gzip" description="create gzipped files for distribution" />
 
   <target name="clean" description="clean up" >
     <delete dir="${dist.dir}"/>
