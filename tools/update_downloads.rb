@@ -8,7 +8,7 @@ require 'github_api'
 @repos = 'mirin.js'               # your repos name (like 'taberareloo')
 @github = Github.new oauth_token: @token
 @now = Time.now
-@nowf = @now.strftime("%Y%m%d%H%M")
+@nowf = @now.strftime("%Y%m%d")
 
 @files = Hash[
   "min" => Hash[
