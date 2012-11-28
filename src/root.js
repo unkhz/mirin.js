@@ -133,7 +133,8 @@ function fetch(url, success, error) {
  
         if ( response && !finished && readyState === 4) {
             finished = true;
-            if ( status === 200 ) {
+            // success status might be 0 if returned from appcache in Android browser
+            if ( Number(status) < 400 ) {
                 if ( success ) success.call(this, response);
             } else {
                 if ( error ) {
